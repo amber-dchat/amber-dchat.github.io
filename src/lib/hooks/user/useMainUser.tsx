@@ -1,11 +1,12 @@
 import GUN from "gun/gun";
-import { IGunInstance, IGunUserInstance, IGunInstanceRoot } from "gun";
+import { IGunInstance, IGunUserInstance, IGunInstanceRoot, ISEAPair } from "gun";
 import "gun/lib/radix"
 import "gun/lib/radisk"
 import "gun/lib/store"
 import "gun/lib/rindexed"
 import "gun/sea"
 import { useState, useContext, createContext, useEffect } from "react";
+import { ClientUser } from "./helpers/User/ClientUser";
 
 export interface FetchUserData {
     alias: string;
@@ -16,16 +17,9 @@ export interface FetchUserData {
     bio: string;
 }
 
-export interface UserInfo {
-    username: string,
-    avatar: string,
-    displayName: string,
-    bio: string
-}
-
 export interface UserContextValues {
     db: IGunInstance;
-    userInfo?: UserInfo;
+    userInfo?: ClientUser;
 }
 
 const UserContext = createContext<UserContextValues | null>(null)
@@ -42,33 +36,19 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const user = db.user().recall({ sessionStorage: true }) as IGunUserInstance<any, any, any, IGunInstanceRoot<any, IGunInstance<any>>>
 
-    const [userInfo, setUserInfo] = useState<UserInfo>()
-    const [username, setUsername] = useState<string>()
-    const [avatar, setAvatar] = useState<string>()
-    const [bio, setBio] = useState<string>()
-    const [displayName, setDisplayName] = useState<string>()
+    const [userInfo, setUserInfo] = useState<ClientUser>()
 
     useEffect(() => {
-        db.on("auth", () => {
-            console.log("DEBUG: USER LOGIN ", user)
-
-            user.get("alias").on((d: string) => setUsername(d))
-            user.get("avatar").on((a: string | undefined) => setAvatar(a ?? `https://api.dicebear.com/7.x/notionists/svg/seed=${username}`))
-            user.get("bio").on((bio: string | undefined) => setBio(bio ?? ""))
-            user.get("display_name").on((dn: string | undefined) => setDisplayName(dn || username))
+        db.on("auth", (ack) => {
+            // @ts-ignore Sea is active since we imported it earlier
+            if(!ack?.sea) {
+                // @ts-ignore
+                setUserInfo(new ClientUser(ack.sea as ISEAPair, db, user))
+            }
         })
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
-    useEffect(() => {
-        if (!!username && !!displayName && !!bio && !!avatar) setUserInfo({
-            username,
-            bio,
-            displayName,
-            avatar
-        })
-    }, [userInfo, username, avatar, bio, displayName])
 
     const values: UserContextValues = {
         db,
