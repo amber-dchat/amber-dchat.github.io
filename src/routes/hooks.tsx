@@ -97,7 +97,8 @@ export function usePageData(): PageData {
   return data;
 }
 
-export function navigate(url: URL) {
+export function navigate(path: string) {
+  const url = new URL(path, window.location.origin);
   window.history.pushState({
     pathname: url.pathname || "/",
     search: url.search
