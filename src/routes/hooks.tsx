@@ -22,6 +22,8 @@ const imports: { [key: string]: () => Promise<React.JSX.Element> } = {
 
 const delay = (ms: number) => new Promise((r) => setTimeout(() => r(null), ms));
 
+const callbacks: ((data: { pathname: string, query: string }) => void)[] = [];
+
 export function usePage() {
   const [page, setPage] = useState(<Loading />);
   const [pathname, setPathname] = useState(window.location.pathname);
@@ -30,7 +32,10 @@ export function usePage() {
   useEffect(() => {
     window.addEventListener("popstate", (event: PopStatefulEvent) => {
       console.log("pop state", event.state);
-      setPathname(event.state.pathname);
+      setPathname(event.state?.pathname || "/");
+    });
+    callbacks.push(({ pathname }) => {
+      setPathname(pathname);
     });
   }, []);
 
@@ -73,18 +78,31 @@ export function usePageData(): PageData {
   useEffect(() => {
     window.addEventListener("popstate", (event: PopStatefulEvent) => {
       console.log("pop state 2", event.state);
-      setData({
-        search: new URLSearchParams(event.state.search)
+      if (event.state) setData({
+        search: new URLSearchParams(event.state?.search)
       });
     });
+
+    const id = callbacks.push(({ query }) => {
+      setData({
+        search: new URLSearchParams(query)
+      })
+    });
+
+    return () => {
+      callbacks.splice(id, 1);
+    }
   }, []);
 
   return data;
 }
 
-export function navigate(url: URL) {
+export function navigate(path: string) {
+  const url = new URL(path, window.location.origin);
   window.history.pushState({
-    pathname: url.pathname,
+    pathname: url.pathname || "/",
     search: url.search
   }, "", url);
+
+  callbacks.forEach((v) => v({ pathname: url.pathname || "/", query: url.search }));
 }
