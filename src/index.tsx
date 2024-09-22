@@ -1,3 +1,7 @@
+import { loadTheme } from './utils/theme';
+
+loadTheme();
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 

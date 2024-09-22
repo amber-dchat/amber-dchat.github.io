@@ -39,6 +39,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         peers: ['https://gun-manhattan.herokuapp.com/gun', `https://gundb-relay-mlccl.ondigitalocean.app/gun`] // TODO: Add our own servers instead of gun relays
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const user = db.user().recall({ sessionStorage: true }) as IGunUserInstance<any, any, any, IGunInstanceRoot<any, IGunInstance<any>>>
 
     const [userInfo, setUserInfo] = useState<UserInfo>()
@@ -52,14 +53,16 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             console.log("DEBUG: USER LOGIN ", user)
 
             user.get("alias").on((d: string) => setUsername(d))
-            user.get("avatar").on((a: string|undefined) => setAvatar(a ?? `https://api.dicebear.com/7.x/notionists/svg/seed=${username}`))
-            user.get("bio").on((bio: string|undefined) => setBio(bio ?? ""))
-            user.get("display_name").on((dn: string|undefined) => setDisplayName(dn || username))
+            user.get("avatar").on((a: string | undefined) => setAvatar(a ?? `https://api.dicebear.com/7.x/notionists/svg/seed=${username}`))
+            user.get("bio").on((bio: string | undefined) => setBio(bio ?? ""))
+            user.get("display_name").on((dn: string | undefined) => setDisplayName(dn || username))
         })
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
-        if(!!username && !!displayName && !!bio && !!avatar) setUserInfo({
+        if (!!username && !!displayName && !!bio && !!avatar) setUserInfo({
             username,
             bio,
             displayName,
