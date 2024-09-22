@@ -33,7 +33,7 @@ export class BaseUser {
     }
 
     async fetch(): Promise<UserInfo> {
-        if(this.info) return this.info
+        if (this.info) return this.info
         else {
             const info = await this.refetch()
             this.info = info
@@ -63,9 +63,9 @@ export class BaseUser {
     }
 
     createPromiseGunCallsUser<T>(key: UserKeys, fallback?: T) {
-        return new Promise((resolve, _) => {
+        return new Promise((resolve) => {
             this._user.get(key).once((d) => {
-                if(d) resolve(d)
+                if (d) resolve(d)
                 resolve(fallback)
             })
         })

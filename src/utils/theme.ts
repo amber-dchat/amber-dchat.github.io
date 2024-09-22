@@ -4,7 +4,11 @@ let defaultDark = calc();
 
 setInterval(() => {
   defaultDark = calc();
-}, 10 * 1000);
+
+  if (!localStorage.dark) {
+    loadThemeInner(defaultDark);
+  }
+}, 1 * 1000);
 
 export function loadTheme() {
   try {

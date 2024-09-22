@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Homenaje&family=Rubik+Glitch&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -71,4 +73,16 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.glitch {
+  font-family: "Rubik Glitch", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.home_font {
+  font-family: "Homenaje", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }

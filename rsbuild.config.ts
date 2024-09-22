@@ -12,6 +12,10 @@ export default defineConfig({
       },
     }),
   ],
+  html: {
+    title: "DChatt",
+    favicon: "./public/favicon.png"
+  },
   source: {
     aliasStrategy: "prefer-tsconfig"
   },
