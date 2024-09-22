@@ -14,5 +14,13 @@ export default defineConfig({
   ],
   source: {
     aliasStrategy: "prefer-tsconfig"
+  },
+  tools: {
+    rspack: {
+      ignoreWarnings: [
+        /Critical/g,
+        /parse/g
+      ]
+    }
   }
 });
