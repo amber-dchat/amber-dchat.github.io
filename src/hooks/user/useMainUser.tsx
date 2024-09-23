@@ -41,7 +41,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         db.on("auth", (ack) => {
             // @ts-expect-error Sea is active since we imported it earlier
-            if (!ack?.sea) {
+            if (ack?.sea) {
                 // @ts-expect-error Sea is already active
                 setUserInfo(new ClientUser(ack.sea as ISEAPair, db, user))
             }
