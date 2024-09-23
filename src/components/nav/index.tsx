@@ -6,7 +6,7 @@ import {
 import { navigate } from '@/hooks';
 
 import './index.css';
-import { useMainUser } from '@/hooks/user/useMainUser';
+import { useMainUser, UserContextValues } from '@/hooks/user/useMainUser';
 
 import { MdDarkMode, MdLightMode, MdOutlineLaptop } from "react-icons/md";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -17,6 +17,7 @@ import { Button } from '../ui/button';
 import { useEffect, useState } from 'react';
 import { getTheme, setTheme } from '@/utils/theme';
 import { Login } from './login';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 export default function NavigationBar() {
 	const [theme, changeTheme] = useState(getTheme());
@@ -47,7 +48,7 @@ export default function NavigationBar() {
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild className='flex justify-center text-center items-center'>
 					<Button variant="ghost">
-						{theme == "system" ? <MdOutlineLaptop /> : theme == "true" ? <MdDarkMode /> : <MdLightMode />}
+						{theme == "system" ? <MdOutlineLaptop size="1.5em" /> : theme == "true" ? <MdDarkMode size="1.5em" /> : <MdLightMode size="1.5em" />}
 						<span className='ml-1 md:block hidden'>{theme == "system" ? "Theme" : theme == "true" ? "Dark" : "Light"}</span>
 					</Button>
 				</DropdownMenuTrigger>
@@ -72,13 +73,28 @@ export default function NavigationBar() {
 			</DropdownMenu>
 
 			<NavigationMenuLink
-				onClick={() => !logged ? setOpen(true) : navigate("/chat")}
-				className={navigationMenuTriggerStyle({ className: 'ml-1 cursor-pointer' })}
+				onClick={() => !logged ? setOpen(true) : undefined}
+				className={navigationMenuTriggerStyle({ className: `ml-1 cursor-pointer ${logged ? "hover:bg-transparent cursor-auto" : ""}` })}
 			>
 				{logged ? <></> : <HiOutlineRocketLaunch />}
-				{logged ? 'Chat' : <span className="ml-1">Get Started</span>}
+				{logged ? <ProfileDropdown user={user} /> : <span className="ml-1">Get Started</span>}
 			</NavigationMenuLink>
 			<Login {...{ open, setOpen }} />
 		</NavigationMenu>
 	);
+}
+
+function ProfileDropdown({ user }: { user: UserContextValues | null }) {
+	return (<DropdownMenu>
+		<DropdownMenuTrigger asChild className='flex justify-center text-center items-center'>
+			<Avatar className='border-2 rounded-full'>
+				<AvatarImage src={user?.userInfo?.avatar || `https://robohash.org/${user?.userInfo?.alias}`} />
+				<AvatarFallback>{user?.userInfo?.alias}</AvatarFallback>
+			</Avatar>
+		</DropdownMenuTrigger>
+
+		<DropdownMenuContent>
+			<DropdownMenuLabel>Hello {user?.userInfo?.display_name || user?.userInfo?.alias}</DropdownMenuLabel>
+		</DropdownMenuContent>
+	</DropdownMenu>);
 }

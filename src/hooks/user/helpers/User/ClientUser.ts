@@ -6,10 +6,26 @@ import { createAvatar } from '@/lib/utils/Avatar/createAvatar';
 
 export class ClientUser extends BaseUser {
 	_sea: ISEAPair;
+	public alias: string = "";
+	public avatar: string = "";
+	public bio: string = "";
+	public display_name: string = "";
 
 	constructor(sea: ISEAPair, db: IGunInstance, user: GunUserInstance) {
 		super(db, user);
 		this._sea = sea;
+	}
+
+	async loadAll() {
+		const arr = ["alias", "avatar", "bio", "display_name"];
+
+		// For loop
+		for (let i = 0; i < arr.length; i++) {
+			const key = arr[i];
+
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			(this as any)[key as any] = await this.createPromiseGunGetUser(key as any);
+		}
 	}
 
 	encrypt(data: string, epub: string) {
