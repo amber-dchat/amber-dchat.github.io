@@ -7,6 +7,7 @@ import "gun/lib/rindexed"
 import "gun/sea"
 import { useState, useContext, createContext, useEffect } from "react";
 import { ClientUser } from "./helpers/User/ClientUser";
+import { AccountManager } from "@/lib/utils/Gun/Accounts/Account";
 
 export interface FetchUserData {
     alias: string;
@@ -20,7 +21,11 @@ export interface FetchUserData {
 export interface UserContextValues {
     db: IGunInstance;
     userInfo?: ClientUser;
+    account: AccountManager;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type GunUserInstance = IGunUserInstance<any, any, any, IGunInstanceRoot<any, IGunInstance<any>>>
 
 const UserContext = createContext<UserContextValues | null>(null)
 
@@ -30,11 +35,11 @@ export function useMainUser() {
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
     const db = GUN({
-        peers: ['https://gun-manhattan.herokuapp.com/gun', `https://gundb-relay-mlccl.ondigitalocean.app/gun`] // TODO: Add our own servers instead of gun relays
+        peers: ['https://gun-manhattan.herokuapp.com/gun', `https://gundb-relay-mlccl.ondigitalocean.app/gun`], // TODO: Add our own servers instead of gun relays
+        localStorage: false // Only use indexeddb
     })
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const user = db.user().recall({ sessionStorage: true }) as IGunUserInstance<any, any, any, IGunInstanceRoot<any, IGunInstance<any>>>
+    const user = db.user().recall({ sessionStorage: true }) as GunUserInstance
 
     const [userInfo, setUserInfo] = useState<ClientUser>()
 
@@ -50,13 +55,15 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             // @ts-expect-error Sea is already active
             setUserInfo(new ClientUser(ack.sea as ISEAPair, db, user))
         })
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    const account = new AccountManager(setUserInfo, user, db)
+
     const values: UserContextValues = {
         db,
-        userInfo
+        userInfo,
+        account
     }
 
     return (

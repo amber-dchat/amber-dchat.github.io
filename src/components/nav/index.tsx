@@ -12,7 +12,7 @@ export default function NavigationBar() {
   const user = useMainUser();
 
   // let react handle useMemo
-  const logged = user?.userInfo?._user.is;
+  const logged = !!user?.userInfo?.isCurrentlyActive
 
   return (
     <NavigationMenu style={{ "display": "flex" }}>

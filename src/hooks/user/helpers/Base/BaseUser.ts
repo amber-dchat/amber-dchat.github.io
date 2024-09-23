@@ -1,4 +1,5 @@
 import { IGunInstance, IGunUserInstance, IGunInstanceRoot } from "gun";
+import type { GunUserInstance } from "../../useMainUser";
 
 export interface UserInfo {
     username: string,
@@ -19,11 +20,11 @@ export type UserKeys = typeof UserKeys[keyof typeof UserKeys]
 export class BaseUser {
     _db: IGunInstance
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    _user: IGunUserInstance<any, any, any, IGunInstanceRoot<any, IGunInstance<any>>>
+    _user: GunUserInstance
     info?: UserInfo
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    constructor(db: IGunInstance, user: IGunUserInstance<any, any, any, IGunInstanceRoot<any, IGunInstance<any>>>) {
+    constructor(db: IGunInstance, user: GunUserInstance) {
         this._db = db;
         this._user = user;
 
