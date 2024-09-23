@@ -1,8 +1,8 @@
-import { UserProvider } from "@/hooks/user/useMainUser";
-import { usePage } from "./hooks";
+import { UserProvider } from '@/hooks/user/useMainUser';
+import { usePage } from './hooks';
 
-import "./index.css"
+import './index.css';
 
 export default function App() {
-  return <UserProvider>{usePage()}</UserProvider>;
+	return <UserProvider>{usePage()}</UserProvider>;
 }

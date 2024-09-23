@@ -1,33 +1,41 @@
-import GunSEA from "gun/sea"
+import GunSEA from 'gun/sea';
 
 export class SEA {
-    static async encryptData(data: string, privateKey: string, publicKey: string, peerPubKey: string) {
-        if(!privateKey ?? !publicKey ?? !peerPubKey) throw new Error("Keys not set")
+	static async encryptData(
+		data: string,
+		privateKey: string,
+		publicKey: string,
+		peerPubKey: string,
+	) {
+		const secret = await GunSEA.secret(peerPubKey, {
+			epriv: privateKey,
+			epub: publicKey,
+		});
 
-        const secret = await GunSEA.secret(peerPubKey, {
-            epriv: privateKey,
-            epub: publicKey
-        })
+		if (secret)
+			return await GunSEA.encrypt(data, {
+				epriv: privateKey,
+			});
 
-        if(secret) return await GunSEA.encrypt(data, {
-            epriv: privateKey
-        })
+		throw new Error('Unable to decrypt message');
+	}
 
-        throw new Error("Unable to decrypt message")
-    }
+	static async decryptMessage(
+		data: string,
+		privateKey: string,
+		publicKey: string,
+		peerPubKey: string,
+	) {
+		const secret = await GunSEA.secret(peerPubKey, {
+			epriv: privateKey,
+			epub: publicKey,
+		});
 
-    static async decryptMessage(data: string, privateKey: string, publicKey: string, peerPubKey: string) {
-        if(!privateKey ?? !publicKey ?? !peerPubKey) throw new Error("Keys not set")
+		if (secret)
+			return await GunSEA.decrypt(data, {
+				epriv: privateKey,
+			});
 
-        const secret = await GunSEA.secret(peerPubKey, {
-            epriv: privateKey,
-            epub: publicKey
-        })
-
-        if(secret) return await GunSEA.decrypt(data, {
-            epriv: privateKey
-        })
-
-        throw new Error("Unable to decrypt message")
-    }
+		throw new Error('Unable to decrypt message');
+	}
 }

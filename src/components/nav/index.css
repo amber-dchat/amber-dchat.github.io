@@ -1,12 +1,12 @@
 nav {
-  /* Default */
-  @apply flex h-14 w-screen my-3 px-2 justify-center max-w-full !important;
+	/* Default */
+	@apply flex h-14 w-screen my-3 px-2 justify-center max-w-full !important;
 }
 
 nav img {
-  @apply h-12 w-12 rounded-full mr-1 !important;
+	@apply h-12 w-12 rounded-full mr-1 !important;
 }
 
 nav a * {
-  @apply cursor-pointer;
+	@apply cursor-pointer;
 }
