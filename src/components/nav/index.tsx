@@ -10,6 +10,8 @@ import { useMainUser } from '@/hooks/user/useMainUser';
 
 import { MdDarkMode, MdLightMode, MdOutlineLaptop } from "react-icons/md";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { HiOutlineRocketLaunch } from "react-icons/hi2";
+
 import { Button } from '../ui/button';
 
 import { useEffect, useState } from 'react';
@@ -73,7 +75,8 @@ export default function NavigationBar() {
 				onClick={() => !logged ? setOpen(true) : navigate("/chat")}
 				className={navigationMenuTriggerStyle({ className: 'ml-1 cursor-pointer' })}
 			>
-				{logged ? 'Chat' : 'Login / SignUp'}
+				{logged ? <></> : <HiOutlineRocketLaunch />}
+				{logged ? 'Chat' : <span className="ml-1">Get Started</span>}
 			</NavigationMenuLink>
 			<Login {...{ open, setOpen }} />
 		</NavigationMenu>
