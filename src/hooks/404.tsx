@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
 import { FcBiohazard } from 'react-icons/fc';
-import { navigate } from './hooks';
+import { navigate } from '@/hooks';
 
 export default function App() {
 	return (

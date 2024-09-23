@@ -1,5 +1,5 @@
 import { UserProvider } from '@/hooks/user/useMainUser';
-import { usePage } from './hooks';
+import { usePage } from '@/hooks';
 
 import './index.css';
 

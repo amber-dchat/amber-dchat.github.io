@@ -1,5 +1,5 @@
 import NavigationBar from '@/components/nav';
-import { navigate } from '../hooks';
+import { navigate } from '@/hooks';
 import { Separator } from '@/components/ui/separator';
 
 export default function App() {
