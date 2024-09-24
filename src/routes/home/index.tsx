@@ -1,13 +1,7 @@
-import NavigationBar from '@/components/nav';
-import { navigate } from '../hooks';
-import { Separator } from '@/components/ui/separator';
-
-export default function App() {
+export default function Home() {
 	return (
-		<div className="w-full">
-			<NavigationBar />
-			<Separator />
-			<div onClick={() => navigate('/this?a=hi')}>Home</div>
+		<div>
+			Home
 		</div>
-	);
+	)
 }

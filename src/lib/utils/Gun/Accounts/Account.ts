@@ -22,7 +22,7 @@ export class AccountManager {
 		this._user = user;
 		this._db = db;
 
-		db.on('auth', (ack: GunUser & { sea?: ISEAPair }) => {
+		db.on('auth', async (ack: GunUser & { sea?: ISEAPair }) => {
 			if (!ack.sea) {
 				console.warn(
 					'SEA (Security, encryption and authorization) systems not found on the user. Proceeding to log out',
@@ -30,7 +30,9 @@ export class AccountManager {
 				return user.leave();
 			}
 
-			setUserInfo(new ClientUser(ack.sea, db, this._user));
+			const client = new ClientUser(ack.sea, db, this._user);
+			await client.loadAll();
+			setUserInfo(client);
 		});
 	}
 

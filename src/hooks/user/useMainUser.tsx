@@ -46,17 +46,17 @@ export function useMainUser() {
 	return useContext(UserContext);
 }
 
+const db = GUN({
+	peers: [
+		'https://gun-manhattan.herokuapp.com/gun',
+		`https://gundb-relay-mlccl.ondigitalocean.app/gun`,
+	], // TODO: Add our own servers instead of gun relays
+	localStorage: false, // Only use indexeddb
+});
+
+const user = db.user().recall({ sessionStorage: true }) as GunUserInstance;
+
 export function UserProvider({ children }: { children: React.ReactNode }) {
-	const db = GUN({
-		peers: [
-			'https://gun-manhattan.herokuapp.com/gun',
-			`https://gundb-relay-mlccl.ondigitalocean.app/gun`,
-		], // TODO: Add our own servers instead of gun relays
-		localStorage: false, // Only use indexeddb
-	});
-
-	const user = db.user().recall({ sessionStorage: true }) as GunUserInstance;
-
 	const [userInfo, setUserInfo] = useState<ClientUser>();
 
 	const account = new AccountManager(setUserInfo, user, db);

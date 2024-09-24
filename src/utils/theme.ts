@@ -8,17 +8,37 @@ setInterval(() => {
 	if (!localStorage.dark) {
 		loadThemeInner(defaultDark);
 	}
-}, 1 * 1000);
+}, 10 * 1000);
 
 export function loadTheme() {
 	try {
 		const dark = JSON.parse(
-			localStorage.dark || defaultDark ? 'true' : 'false',
+			localStorage.dark || (defaultDark ? 'true' : 'false'),
 		) as boolean;
+
 		loadThemeInner(dark);
-	} catch {
+	} catch (e) {
+		console.log(e);
 		loadThemeInner(defaultDark);
 	}
+}
+
+export const getTheme = () => {
+	try {
+		return localStorage.dark ? localStorage.dark : "system";
+	} catch {
+		return "system";
+	}
+}
+
+export const setTheme = (theme: string) => {
+	if (theme == "system") {
+		localStorage.removeItem("dark");
+	} else {
+		localStorage.dark = theme;
+	}
+
+	loadTheme();
 }
 
 const loadThemeInner = (dark: boolean) =>

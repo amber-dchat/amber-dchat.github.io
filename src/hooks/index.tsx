@@ -19,7 +19,7 @@ const promisify =
 		e().then(({ default: R }) => <R />);
 
 const imports: { [key: string]: () => Promise<React.JSX.Element> } = {
-	'/': promisify(() => import('@/routes/home/index')),
+	'/': promisify(() => import('@/routes/landing/index')),
 };
 
 const delay = (ms: number) => new Promise((r) => setTimeout(() => r(null), ms));
