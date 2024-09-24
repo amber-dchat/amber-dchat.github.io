@@ -12,6 +12,9 @@ export default defineConfig({
 			},
 		}),
 	],
+	dev: {
+		progressBar: true
+	},
 	html: {
 		title: 'DChatt',
 		favicon: './public/favicon.png',

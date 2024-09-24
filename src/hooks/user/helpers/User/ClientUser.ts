@@ -5,8 +5,8 @@ import { type GunUserInstance } from '../../useMainUser';
 import { createAvatar } from '@/lib/utils/Avatar/createAvatar';
 
 type ClientUserOptions = {
-	preventFetch?: boolean
-}
+	preventFetch?: boolean;
+};
 
 type OnFriendsUpdateHandler = (friends: string[]) => void;
 
@@ -14,20 +14,25 @@ export class ClientUser extends BaseUser {
 	_sea: ISEAPair;
 	private _isListeningForFriends = false;
 
-	constructor(sea: ISEAPair, db: IGunInstance, user: GunUserInstance, options?: ClientUserOptions) {
+	constructor(
+		sea: ISEAPair,
+		db: IGunInstance,
+		user: GunUserInstance,
+		options?: ClientUserOptions,
+	) {
 		super(db, user, options?.preventFetch);
 		this._sea = sea;
 	}
 
 	onFriendsUpdate(onUpdate: OnFriendsUpdateHandler, forceMultiple = false) {
-		if (this._isListeningForFriends && !forceMultiple) return
-		const list = this._user.get("friends")
+		if (this._isListeningForFriends && !forceMultiple) return;
+		const list = this._user.get('friends');
 
 		list.on((data: string[] /* these are gun souls */) => onUpdate(data));
 
 		return () => {
-			list.off()
-		}
+			list.off();
+		};
 	}
 
 	encrypt(data: string, epub: string) {

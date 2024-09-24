@@ -7,12 +7,22 @@ import { navigate } from '@/hooks';
 
 import './index.css';
 
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings } from 'lucide-react';
 import { useMainUser, UserContextValues } from '@/hooks/user/useMainUser';
 
-import { MdDarkMode, MdLightMode, MdOutlineLaptop } from "react-icons/md";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { HiOutlineRocketLaunch } from "react-icons/hi2";
+import { MdDarkMode, MdLightMode, MdOutlineLaptop } from 'react-icons/md';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuGroup,
+	DropdownMenuLabel,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { HiOutlineRocketLaunch } from 'react-icons/hi2';
 
 import { Button } from '../ui/button';
 
@@ -32,8 +42,7 @@ export default function NavigationBar() {
 	// let react handle useMemo
 	const logged = !!user?.userInfo?.isCurrentlyActive;
 
-	useEffect(() => logged ? setOpen(false) : undefined, [logged]);
-
+	useEffect(() => (logged ? setOpen(false) : undefined), [logged]);
 
 	return (
 		<NavigationMenu style={{ display: 'flex' }}>
@@ -48,10 +57,21 @@ export default function NavigationBar() {
 			</NavigationMenuLink>
 
 			<DropdownMenu>
-				<DropdownMenuTrigger asChild className='flex justify-center text-center items-center'>
+				<DropdownMenuTrigger
+					asChild
+					className="flex justify-center text-center items-center"
+				>
 					<Button variant="ghost">
-						{theme == "system" ? <MdOutlineLaptop size="1.5em" /> : theme == "true" ? <MdDarkMode size="1.5em" /> : <MdLightMode size="1.5em" />}
-						<span className='ml-1 md:block hidden'>{theme == "system" ? "Theme" : theme == "true" ? "Dark" : "Light"}</span>
+						{theme == 'system' ? (
+							<MdOutlineLaptop size="1.5em" />
+						) : theme == 'true' ? (
+							<MdDarkMode size="1.5em" />
+						) : (
+							<MdLightMode size="1.5em" />
+						)}
+						<span className="ml-1 md:block hidden">
+							{theme == 'system' ? 'Theme' : theme == 'true' ? 'Dark' : 'Light'}
+						</span>
 					</Button>
 				</DropdownMenuTrigger>
 
@@ -60,26 +80,32 @@ export default function NavigationBar() {
 
 					<DropdownMenuRadioGroup value={theme} onValueChange={changeTheme}>
 						<DropdownMenuRadioItem value="system">
-							<MdOutlineLaptop /> <span className='ml-1'>System</span>
+							<MdOutlineLaptop /> <span className="ml-1">System</span>
 						</DropdownMenuRadioItem>
 
 						<DropdownMenuRadioItem value="true">
-							<MdDarkMode /> <span className='ml-1'>Dark</span>
+							<MdDarkMode /> <span className="ml-1">Dark</span>
 						</DropdownMenuRadioItem>
 
 						<DropdownMenuRadioItem value="false">
-							<MdLightMode /> <span className='ml-1'>Light</span>
+							<MdLightMode /> <span className="ml-1">Light</span>
 						</DropdownMenuRadioItem>
 					</DropdownMenuRadioGroup>
 				</DropdownMenuContent>
 			</DropdownMenu>
 
 			<NavigationMenuLink
-				onClick={() => !logged ? setOpen(true) : undefined}
-				className={navigationMenuTriggerStyle({ className: `ml-1 cursor-pointer ${logged ? "hover:bg-transparent cursor-auto" : ""}` })}
+				onClick={() => (!logged ? setOpen(true) : undefined)}
+				className={navigationMenuTriggerStyle({
+					className: `ml-1 cursor-pointer ${logged ? 'hover:bg-transparent cursor-auto' : ''}`,
+				})}
 			>
 				{logged ? <></> : <HiOutlineRocketLaunch />}
-				{logged ? <ProfileDropdown user={user} /> : <span className="ml-1">Get Started</span>}
+				{logged ? (
+					<ProfileDropdown user={user} />
+				) : (
+					<span className="ml-1">Get Started</span>
+				)}
 			</NavigationMenuLink>
 			<Login {...{ open, setOpen }} />
 		</NavigationMenu>
@@ -91,30 +117,34 @@ function ProfileDropdown({ user }: { user: UserContextValues | null }) {
 	const avatar = user?.userInfo?.info?.avatar;
 	const displayName = user?.userInfo?.info?.displayName;
 
-	return (<DropdownMenu>
-		<DropdownMenuTrigger asChild>
-			<Avatar className='border-2 rounded-full'>
-				<AvatarImage src={avatar || `https://robohash.org/${alias}`} />
-				<AvatarFallback>{(alias || "").substring(0, 1).toUpperCase()}</AvatarFallback>
-			</Avatar>
-		</DropdownMenuTrigger>
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Avatar className="border-2 rounded-full">
+					<AvatarImage src={avatar || `https://robohash.org/${alias}`} />
+					<AvatarFallback>
+						{(alias || '').substring(0, 1).toUpperCase()}
+					</AvatarFallback>
+				</Avatar>
+			</DropdownMenuTrigger>
 
-		<DropdownMenuContent>
-			<DropdownMenuLabel>Hello {displayName || alias}</DropdownMenuLabel>
+			<DropdownMenuContent>
+				<DropdownMenuLabel>Hello {displayName || alias}</DropdownMenuLabel>
 
-			<DropdownMenuSeparator />
+				<DropdownMenuSeparator />
 
-			<DropdownMenuGroup>
-				<DropdownMenuItem>
-					<Settings className="mr-2 h-4 w-4" />
-					<span>Edit Profile</span>
-				</DropdownMenuItem>
+				<DropdownMenuGroup>
+					<DropdownMenuItem>
+						<Settings className="mr-2 h-4 w-4" />
+						<span>Edit Profile</span>
+					</DropdownMenuItem>
 
-				<DropdownMenuItem onClick={() => user?.account.logout()}>
-					<LogOut className="mr-2 h-4 w-4" />
-					<span>Logout</span>
-				</DropdownMenuItem>
-			</DropdownMenuGroup>
-		</DropdownMenuContent>
-	</DropdownMenu>);
+					<DropdownMenuItem onClick={() => user?.account.logout()}>
+						<LogOut className="mr-2 h-4 w-4" />
+						<span>Logout</span>
+					</DropdownMenuItem>
+				</DropdownMenuGroup>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	);
 }

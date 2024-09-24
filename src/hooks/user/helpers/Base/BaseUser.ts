@@ -7,7 +7,7 @@ export interface UserInfo {
 	avatar: string;
 	displayName: string;
 	bio: string;
-	friends: string[]
+	friends: string[];
 }
 
 export const UserKeys = {
@@ -15,7 +15,7 @@ export const UserKeys = {
 	Bio: 'bio',
 	DisplayName: 'display_name',
 	Avatar: 'avatar',
-	Friends: "friends"
+	Friends: 'friends',
 } as const;
 
 export interface ValidUserInfo {
@@ -38,7 +38,7 @@ export class BaseUser {
 		this._db = db;
 		this._user = user;
 
-		if(!preventFetch) {
+		if (!preventFetch) {
 			(async () => {
 				this.info = await this.refetch();
 			})();
@@ -75,14 +75,14 @@ export class BaseUser {
 		) as Promise<string>;
 		const friendsPro = this.createPromiseGunGetUser(
 			UserKeys.Friends,
-			[] as string[]
+			[] as string[],
 		) as Promise<string[]>;
 
 		const [bio, avatar, displayName, friends] = await Promise.all([
 			bioPro,
 			avatarPro,
 			displaynamePro,
-			friendsPro
+			friendsPro,
 		]);
 
 		const userData: UserInfo = {
@@ -90,10 +90,10 @@ export class BaseUser {
 			avatar,
 			displayName,
 			username,
-			friends
+			friends,
 		};
 
-		if(updateCache) this._setUserInfo(userData)
+		if (updateCache) this._setUserInfo(userData);
 
 		return userData;
 	}
@@ -115,10 +115,13 @@ export class BaseUser {
 	createPromiseGunGetUser<T>(key: UserKeys, fallback?: T) {
 		return new Promise((resolve, reject) => {
 			// abort
-			const { clear } = Util.createGunTimeoutRejection("ERR_TIMEOUT: The user property get operation timeout", reject)
+			const { clear } = Util.createGunTimeoutRejection(
+				'ERR_TIMEOUT: The user property get operation timeout',
+				reject,
+			);
 
 			this._user.get(key).once((d) => {
-				clear()
+				clear();
 				if (d) resolve(d);
 				resolve(fallback);
 			});

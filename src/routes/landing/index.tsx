@@ -11,12 +11,12 @@ export default function App() {
 	const loggedIn = user?.userInfo?.isCurrentlyActive;
 
 	return (
-		<div className='w-full h-full'>
+		<div className="w-full h-full">
 			<NavigationBar />
 
 			<Separator />
 
-			<div className='h-[calc(100vh-5.06rem)]'>
+			<div className="h-[calc(100vh-5.06rem)]">
 				{loggedIn ? <Chat /> : <Home />}
 			</div>
 		</div>

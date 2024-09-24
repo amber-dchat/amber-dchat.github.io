@@ -25,21 +25,21 @@ export function loadTheme() {
 
 export const getTheme = () => {
 	try {
-		return localStorage.dark ? localStorage.dark : "system";
+		return localStorage.dark ? localStorage.dark : 'system';
 	} catch {
-		return "system";
+		return 'system';
 	}
-}
+};
 
 export const setTheme = (theme: string) => {
-	if (theme == "system") {
-		localStorage.removeItem("dark");
+	if (theme == 'system') {
+		localStorage.removeItem('dark');
 	} else {
 		localStorage.dark = theme;
 	}
 
 	loadTheme();
-}
+};
 
 const loadThemeInner = (dark: boolean) =>
 	document.body.classList.toggle('dark', dark);

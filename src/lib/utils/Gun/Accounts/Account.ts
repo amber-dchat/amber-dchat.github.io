@@ -31,7 +31,7 @@ export class AccountManager {
 			}
 
 			const client = new ClientUser(ack.sea, db, this._user, {
-				preventFetch: true
+				preventFetch: true,
 			});
 
 			await client.refetch(true);

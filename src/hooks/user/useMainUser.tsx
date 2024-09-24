@@ -1,9 +1,5 @@
 import GUN from 'gun/gun';
-import {
-	IGunInstance,
-	IGunUserInstance,
-	IGunInstanceRoot
-} from 'gun';
+import { IGunInstance, IGunUserInstance, IGunInstanceRoot } from 'gun';
 import 'gun/lib/radix';
 import 'gun/lib/radisk';
 import 'gun/lib/store';
