@@ -34,13 +34,15 @@ export class BaseUser {
 	_user: GunUserInstance;
 	info?: UserInfo;
 
-	constructor(db: IGunInstance, user: GunUserInstance) {
+	constructor(db: IGunInstance, user: GunUserInstance, preventFetch = false) {
 		this._db = db;
 		this._user = user;
 
-		(async () => {
-			this.info = await this.refetch();
-		})();
+		if(!preventFetch) {
+			(async () => {
+				this.info = await this.refetch();
+			})();
+		}
 	}
 
 	async fetch(): Promise<UserInfo> {

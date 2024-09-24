@@ -30,8 +30,12 @@ export class AccountManager {
 				return user.leave();
 			}
 
-			const client = new ClientUser(ack.sea, db, this._user);
-			await client.loadAll();
+			const client = new ClientUser(ack.sea, db, this._user, {
+				preventFetch: true
+			});
+
+			await client.refetch(true);
+
 			setUserInfo(client);
 		});
 	}

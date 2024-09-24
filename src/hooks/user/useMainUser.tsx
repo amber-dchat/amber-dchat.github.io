@@ -2,15 +2,14 @@ import GUN from 'gun/gun';
 import {
 	IGunInstance,
 	IGunUserInstance,
-	IGunInstanceRoot,
-	ISEAPair,
+	IGunInstanceRoot
 } from 'gun';
 import 'gun/lib/radix';
 import 'gun/lib/radisk';
 import 'gun/lib/store';
 import 'gun/lib/rindexed';
 import 'gun/sea';
-import { useState, useContext, createContext, useEffect } from 'react';
+import { useState, useContext, createContext } from 'react';
 import { ClientUser } from './helpers/User/ClientUser';
 import { AccountManager } from '@/lib/utils/Gun/Accounts/Account';
 
