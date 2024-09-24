@@ -1,11 +1,13 @@
 import { IGunInstance } from 'gun';
 import type { GunUserInstance } from '../../useMainUser';
+import { Util } from '@/lib/utils/Utils/Util';
 
 export interface UserInfo {
 	username: string;
 	avatar: string;
 	displayName: string;
 	bio: string;
+	friends: string[]
 }
 
 export const UserKeys = {
@@ -13,6 +15,7 @@ export const UserKeys = {
 	Bio: 'bio',
 	DisplayName: 'display_name',
 	Avatar: 'avatar',
+	Friends: "friends"
 } as const;
 
 export interface ValidUserInfo {
@@ -20,6 +23,7 @@ export interface ValidUserInfo {
 	[UserKeys.Bio]: string;
 	[UserKeys.DisplayName]: string;
 	[UserKeys.Username]: string;
+	[UserKeys.Friends]: string;
 }
 
 export type UserKeys = (typeof UserKeys)[keyof typeof UserKeys];
@@ -67,11 +71,16 @@ export class BaseUser {
 		const displaynamePro = this.createPromiseGunGetUser(
 			UserKeys.DisplayName,
 		) as Promise<string>;
+		const friendsPro = this.createPromiseGunGetUser(
+			UserKeys.Friends,
+			[] as string[]
+		) as Promise<string[]>;
 
-		const [bio, avatar, displayName] = await Promise.all([
+		const [bio, avatar, displayName, friends] = await Promise.all([
 			bioPro,
 			avatarPro,
 			displaynamePro,
+			friendsPro
 		]);
 
 		const userData: UserInfo = {
@@ -79,6 +88,7 @@ export class BaseUser {
 			avatar,
 			displayName,
 			username,
+			friends
 		};
 
 		if(updateCache) this._setUserInfo(userData)
@@ -101,8 +111,12 @@ export class BaseUser {
 	}
 
 	createPromiseGunGetUser<T>(key: UserKeys, fallback?: T) {
-		return new Promise((resolve) => {
+		return new Promise((resolve, reject) => {
+			// abort
+			const { clear } = Util.createGunTimeoutRejection("ERR_TIMEOUT: The user property get operation timeout", reject)
+
 			this._user.get(key).once((d) => {
+				clear()
 				if (d) resolve(d);
 				resolve(fallback);
 			});
