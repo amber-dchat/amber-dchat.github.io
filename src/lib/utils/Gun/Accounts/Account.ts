@@ -31,7 +31,6 @@ export class AccountManager {
 			}
 
 			const client = new ClientUser(ack.sea, db, this._user);
-			await client.loadAll();
 			setUserInfo(client);
 		});
 	}
