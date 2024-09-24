@@ -1,6 +1,11 @@
+import { $ } from '@/utils/syntax';
 import Resizer from 'react-image-file-resizer';
 
 const VALID_IMAGE_MIME_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
+
+export async function promptForAvatar() {
+	$<HTMLInputElement>("#avatar")?.click();
+}
 
 export function createAvatar(image: File) {
 	return new Promise<string>((resolve, reject) => {

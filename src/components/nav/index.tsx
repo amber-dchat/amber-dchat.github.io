@@ -87,16 +87,20 @@ export default function NavigationBar() {
 }
 
 function ProfileDropdown({ user }: { user: UserContextValues | null }) {
+	const alias = user?.userInfo?.info?.username;
+	const avatar = user?.userInfo?.info?.avatar;
+	const displayName = user?.userInfo?.info?.displayName;
+
 	return (<DropdownMenu>
 		<DropdownMenuTrigger asChild>
 			<Avatar className='border-2 rounded-full'>
-				<AvatarImage src={user?.userInfo?.avatar || `https://robohash.org/${user?.userInfo?.alias}`} />
-				<AvatarFallback>{user?.userInfo?.alias.substring(0, 1).toUpperCase()}</AvatarFallback>
+				<AvatarImage src={avatar || `https://robohash.org/${alias}`} />
+				<AvatarFallback>{(alias || "").substring(0, 1).toUpperCase()}</AvatarFallback>
 			</Avatar>
 		</DropdownMenuTrigger>
 
 		<DropdownMenuContent>
-			<DropdownMenuLabel>Hello {user?.userInfo?.display_name || user?.userInfo?.alias}</DropdownMenuLabel>
+			<DropdownMenuLabel>Hello {displayName || alias}</DropdownMenuLabel>
 
 			<DropdownMenuSeparator />
 
