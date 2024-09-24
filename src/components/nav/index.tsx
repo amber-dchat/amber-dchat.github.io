@@ -91,7 +91,7 @@ function ProfileDropdown({ user }: { user: UserContextValues | null }) {
 		<DropdownMenuTrigger asChild>
 			<Avatar className='border-2 rounded-full'>
 				<AvatarImage src={user?.userInfo?.avatar || `https://robohash.org/${user?.userInfo?.alias}`} />
-				<AvatarFallback>{user?.userInfo?.alias}</AvatarFallback>
+				<AvatarFallback>{user?.userInfo?.alias.substring(0, 1).toUpperCase()}</AvatarFallback>
 			</Avatar>
 		</DropdownMenuTrigger>
 
