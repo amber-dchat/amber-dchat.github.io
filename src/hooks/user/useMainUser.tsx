@@ -59,23 +59,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
 	const [userInfo, setUserInfo] = useState<ClientUser>();
 
-	useEffect(() => {
-		db.on('auth', (ack) => {
-			// @ts-expect-error Sea is active since we imported it earlier
-			if (!ack?.sea) {
-				// If no encryption data is found, proceed to log out the user
-				console.warn(
-					'SEA (Security, encryption and authorization) systems not found on the user. Proceeding to log out',
-				);
-				return user.leave();
-			}
-
-			// @ts-expect-error Sea is already active
-			setUserInfo(new ClientUser(ack.sea as ISEAPair, db, user));
-		});
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
 	const account = new AccountManager(setUserInfo, user, db);
 
 	const values: UserContextValues = {

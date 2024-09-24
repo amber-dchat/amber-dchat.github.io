@@ -4,12 +4,20 @@ import { IGunInstance, ISEAPair } from 'gun';
 import { type GunUserInstance } from '../../useMainUser';
 import { createAvatar } from '@/lib/utils/Avatar/createAvatar';
 
+type OnFriendsUpdateHandler = (friends: string[]) => void;
+
 export class ClientUser extends BaseUser {
 	_sea: ISEAPair;
+	private _isListeningForFriends = false;
 
 	constructor(sea: ISEAPair, db: IGunInstance, user: GunUserInstance) {
 		super(db, user);
 		this._sea = sea;
+	}
+
+	onFriendsUpdate(onUpdate: OnFriendsUpdateHandler, forceMultiple = false) {
+		if(this._isListeningForFriends && !forceMultiple) return
+		this._user.get("friends").on((data: string[] /* these are gun souls */) => onUpdate(data));
 	}
 
 	encrypt(data: string, epub: string) {
