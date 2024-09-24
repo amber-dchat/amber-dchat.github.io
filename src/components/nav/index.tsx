@@ -6,10 +6,12 @@ import {
 import { navigate } from '@/hooks';
 
 import './index.css';
+
+import { LogOut, Settings } from "lucide-react";
 import { useMainUser, UserContextValues } from '@/hooks/user/useMainUser';
 
 import { MdDarkMode, MdLightMode, MdOutlineLaptop } from "react-icons/md";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { HiOutlineRocketLaunch } from "react-icons/hi2";
 
 import { Button } from '../ui/button';
@@ -86,7 +88,7 @@ export default function NavigationBar() {
 
 function ProfileDropdown({ user }: { user: UserContextValues | null }) {
 	return (<DropdownMenu>
-		<DropdownMenuTrigger asChild className='flex justify-center text-center items-center'>
+		<DropdownMenuTrigger asChild>
 			<Avatar className='border-2 rounded-full'>
 				<AvatarImage src={user?.userInfo?.avatar || `https://robohash.org/${user?.userInfo?.alias}`} />
 				<AvatarFallback>{user?.userInfo?.alias}</AvatarFallback>
@@ -95,6 +97,20 @@ function ProfileDropdown({ user }: { user: UserContextValues | null }) {
 
 		<DropdownMenuContent>
 			<DropdownMenuLabel>Hello {user?.userInfo?.display_name || user?.userInfo?.alias}</DropdownMenuLabel>
+
+			<DropdownMenuSeparator />
+
+			<DropdownMenuGroup>
+				<DropdownMenuItem>
+					<Settings className="mr-2 h-4 w-4" />
+					<span>Edit Profile</span>
+				</DropdownMenuItem>
+
+				<DropdownMenuItem onClick={() => user?.account.logout()}>
+					<LogOut className="mr-2 h-4 w-4" />
+					<span>Logout</span>
+				</DropdownMenuItem>
+			</DropdownMenuGroup>
 		</DropdownMenuContent>
 	</DropdownMenu>);
 }
