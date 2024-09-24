@@ -3,6 +3,7 @@ import Chat from '../chat';
 import Home from '../home';
 
 import NavigationBar from '@/components/nav';
+import { Separator } from '@/components/ui/separator';
 
 export default function App() {
 	const user = useMainUser();
@@ -13,7 +14,9 @@ export default function App() {
 		<div className='w-full h-full'>
 			<NavigationBar />
 
-			<div className='h-[calc(100vh-5rem)]'>
+			<Separator />
+
+			<div className='h-[calc(100vh-5.06rem)]'>
 				{loggedIn ? <Chat /> : <Home />}
 			</div>
 		</div>

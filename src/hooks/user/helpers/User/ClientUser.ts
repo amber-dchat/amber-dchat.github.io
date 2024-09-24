@@ -20,9 +20,9 @@ export class ClientUser extends BaseUser {
 	}
 
 	onFriendsUpdate(onUpdate: OnFriendsUpdateHandler, forceMultiple = false) {
-		if(this._isListeningForFriends && !forceMultiple) return
+		if (this._isListeningForFriends && !forceMultiple) return
 		const list = this._user.get("friends")
-		
+
 		list.on((data: string[] /* these are gun souls */) => onUpdate(data));
 
 		return () => {

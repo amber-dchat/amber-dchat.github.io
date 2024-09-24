@@ -14,6 +14,7 @@ if (rootEl) {
 	const root = ReactDOM.createRoot(rootEl);
 	root.render(
 		<React.StrictMode>
+			<input type="file" id="avatar" accept="image/*" multiple={false} hidden />
 			<App />
 		</React.StrictMode>,
 	);
