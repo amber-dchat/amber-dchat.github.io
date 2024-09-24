@@ -18,6 +18,8 @@ export const UserKeys = {
 	Friends: 'friends',
 } as const;
 
+export const profileDefault = "https://api.dicebear.com/7.x/notionists/svg/seed=${username}";
+
 export interface ValidUserInfo {
 	[UserKeys.Avatar]: string;
 	[UserKeys.Bio]: string;
@@ -68,7 +70,7 @@ export class BaseUser {
 		)) as string;
 		const avatarPro = this.createPromiseGunGetUser(
 			UserKeys.Avatar,
-			`https://api.dicebear.com/7.x/notionists/svg/seed=${username}`,
+			profileDefault.replace("${username}", username)
 		) as Promise<string>;
 		const displaynamePro = this.createPromiseGunGetUser(
 			UserKeys.DisplayName,

@@ -41,7 +41,7 @@ export function useMainUser() {
 	return useContext(UserContext);
 }
 
-const db = GUN({
+export const db = GUN({
 	peers: [
 		'https://gun-manhattan.herokuapp.com/gun',
 		`https://gundb-relay-mlccl.ondigitalocean.app/gun`,
