@@ -9,10 +9,6 @@ type OnFriendsUpdateHandler = (friends: string[]) => void;
 export class ClientUser extends BaseUser {
 	_sea: ISEAPair;
 	private _isListeningForFriends = false;
-	public alias: string = "";
-	public avatar: string = "";
-	public bio: string = "";
-	public display_name: string = "";
 
 	constructor(sea: ISEAPair, db: IGunInstance, user: GunUserInstance) {
 		super(db, user);
@@ -21,18 +17,12 @@ export class ClientUser extends BaseUser {
 
 	onFriendsUpdate(onUpdate: OnFriendsUpdateHandler, forceMultiple = false) {
 		if(this._isListeningForFriends && !forceMultiple) return
-		this._user.get("friends").on((data: string[] /* these are gun souls */) => onUpdate(data));
-	}
+		const list = this._user.get("friends")
+		
+		list.on((data: string[] /* these are gun souls */) => onUpdate(data));
 
-	async loadAll() {
-		const arr = Object.values(UserKeys);
-
-		// For loop
-		for (let i = 0; i < arr.length; i++) {
-			const key = arr[i];
-
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			(this as any)[key as any] = await this.createPromiseGunGetUser(key as any);
+		return () => {
+			list.off()
 		}
 	}
 
