@@ -10,8 +10,7 @@ export function useChats(): ChatData {
 
 export function ChatsProvider({ children }: { children?: JSX.Element | JSX.Element[] }) {
   const user = useMainUser();
-
-  console.log(user);
+  
   const data = new ChatData(user as UserContextValues);
 
   return <ChatContext.Provider value={data}>

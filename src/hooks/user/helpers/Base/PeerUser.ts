@@ -1,6 +1,7 @@
 import { Util } from "@/lib/utils/Utils/Util";
 import type { IGunInstance } from "gun";
 import { UserInfo, UserKeys } from "./BaseUser";
+import { db } from "../../useMainUser";
 
 export type PeerData = {
     [UserKeys.Username]: string;
@@ -15,14 +16,25 @@ export type PeerData = {
 export async function getRawUser(alias: string, gun: IGunInstance) {
     return new Promise<PeerData>((resolve, reject) =>{
         const { clear } = Util.createGunTimeoutRejection("TIMEOUT PEER FETCH", reject)
-
-        gun.get(`~@${alias}`).once((d) => {
+        const isFromPub = !alias.startsWith("@")
+        gun.get(`~${alias}`).once((d) => {
+            if(isFromPub) {
+                clear()
+                resolve(d)
+                return
+            }
             gun.get(Object.keys(d._[">"])[0]).once((user) => {
                 clear()
                 resolve(user)
             })
         });
     })
+}
+
+export interface SerializePeerUser {
+    info: UserInfo;
+    epub: string;
+    pub: string;
 }
 
 export class PeerUser {
@@ -45,6 +57,10 @@ export class PeerUser {
         this._gun = g
     }
 
+    toGunUser() {
+        return this._gun.user(this.pub)
+    }
+
     _transformPeerData(d: PeerData): UserInfo {
         return {
             username: d[UserKeys.Username],
@@ -64,5 +80,31 @@ export class PeerUser {
         this.pub = data.pub
 
         return this
+    }
+
+    toJSON(): SerializePeerUser {
+        return {
+            info: this.info,
+            epub: this.epub,
+            pub: this.pub
+        }
+    }
+
+    toString() {
+        return JSON.stringify(this.toJSON())
+    }
+
+    static fromJSON(json: SerializePeerUser): PeerUser {
+        const data: PeerData = {
+            [UserKeys.Username]: json.info.username,
+            [UserKeys.DisplayName]: json.info.displayName,
+            [UserKeys.Friends]: json.info.friends,
+            [UserKeys.Bio]: json.info.bio,
+            [UserKeys.Avatar]: json.info.bio,
+            epub: json.epub,
+            pub: json.pub
+        }
+        
+        return new PeerUser(data, db)
     }
 }

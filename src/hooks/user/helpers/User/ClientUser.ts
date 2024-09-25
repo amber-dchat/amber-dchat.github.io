@@ -13,6 +13,7 @@ type OnFriendsUpdateHandler = (friends: string[]) => void;
 export class ClientUser extends BaseUser {
 	_sea: ISEAPair;
 	private _isListeningForFriends = false;
+	rawGunUser = this._user
 
 	constructor(
 		sea: ISEAPair,

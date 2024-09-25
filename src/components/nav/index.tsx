@@ -43,7 +43,13 @@ export default function NavigationBar() {
 	// let react handle useMemo
 	const logged = !!user?.userInfo?.isCurrentlyActive;
 
-	useEffect(() => (logged ? setOpen(false) : undefined), [logged]);
+	useEffect(() => {
+		(logged ? setOpen(false) : undefined);
+		user?.userInfo?._user.get("pub").once(async (d) => {
+			console.log(d)
+			getUser(d, user.db!).then(console.log)
+		})
+	}, [logged]);
 
 	return (
 		<NavigationMenu style={{ display: 'flex' }}>
