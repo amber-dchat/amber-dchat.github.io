@@ -47,7 +47,7 @@ export class AccountManager {
 					reject((ack as { err: string }).err);
 				}
 
-				resolve(undefined)
+				resolve(undefined);
 			});
 		});
 	}
@@ -68,7 +68,7 @@ export class AccountManager {
 					reject((ack as { err: string }).err);
 				}
 
-				this.login(username, password)
+				this.login(username, password);
 
 				this._user.get(UserKeys.DisplayName).put(username, () => {
 					resolve(undefined);
