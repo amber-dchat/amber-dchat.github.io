@@ -30,6 +30,7 @@ import { useEffect, useState } from 'react';
 import { getTheme, setTheme } from '@/utils/theme';
 import { Login } from './login';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { getUser } from '@/lib/utils/Gun/Users/getUser';
 
 export default function NavigationBar() {
 	const [theme, changeTheme] = useState(getTheme());
