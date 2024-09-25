@@ -9,6 +9,7 @@ export class DMChannel {
 	client: ClientUser;
 	peer: PeerUser;
 	_db: IGunInstance;
+	__onMessage: (msg: Message) => void;
 
 	constructor(
 		client: ClientUser,
@@ -20,9 +21,13 @@ export class DMChannel {
 		this.peer = peer;
 		this._db = db;
 
+		this.__onMessage = onMessageUpdate
+
 		db.get(this.__createChannelQuery())
 			.map()
-			.once((d) => {
+			.once(async (d) => {
+				const decrypted = await this.client.decrypt(d.content, peer.epub);
+				d.content = decrypted;
 				const message = new Message(d);
 				onMessageUpdate(message);
 			});
@@ -50,7 +55,9 @@ export class DMChannel {
 					content: secret,
 					by: d,
 				});
-				resolve(new Message({ content, by: d }));
+				const message = new Message({ content, by: d });
+				this.__onMessage(message);
+				resolve(message);
 			});
 		});
 	}

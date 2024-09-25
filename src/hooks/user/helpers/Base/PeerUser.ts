@@ -77,7 +77,7 @@ export class PeerUser {
 	}
 
 	async refresh() {
-		const data = await getRawUser(this.info.username, this._gun);
+		const data = await getRawUser(this.pub, this._gun);
 		const info = this._transformPeerData(data);
 
 		this.info = info;
