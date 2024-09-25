@@ -6,7 +6,7 @@ export default function Desktop() {
   const chat = useChats();
 
   useEffect(() => {
-    chat.getUser("@shisui").then(console.log);
+    chat.getUser("shisui").then(console.log);
   }, [chat])
 
   return <ResizablePanelGroup direction="horizontal" className="w-full h-full">

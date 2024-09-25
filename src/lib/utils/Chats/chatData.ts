@@ -1,7 +1,7 @@
 // THIS IS A MOCK CHAT DATA FILE FOR UI DEVELOPMENT
-
-import { profileDefault, ValidUserInfo } from "@/hooks/user/helpers/Base/BaseUser"
+import { PeerUser } from "@/hooks/user/helpers/Base/PeerUser"
 import { db, UserContextValues } from "@/hooks/user/useMainUser"
+import { getUser } from "../Gun/Users/getUser"
 
 export interface Message {
   content: string
@@ -18,7 +18,7 @@ export class ChatData {
   public chats: string[] = [];
 
   public message: Cache<Message> = {};
-  public users: Cache<ValidUserInfo> = {};
+  public users: Cache<PeerUser> = {};
 
   constructor(user: UserContextValues) {
     this.user = user;
@@ -31,25 +31,24 @@ export class ChatData {
     ]
   }
 
-  getUser(uid: string): Promise<ValidUserInfo> {
-    return new Promise((r) => {
-      if (this.users[uid]) {
-        return this.users[uid]
-      }
+  // This will likely explode once we add group DMs
+  async refreshCache() {
+    const refreshPromises = Object.keys(this.users)
 
-      db.get(`~@${uid}`).once((d) => {
-        const pubkey = Object.keys(d._[">"])[0];
+    for (const alias of refreshPromises) {
+      this.users[alias] = await getUser(alias, db)
+    }
 
-        this.user.db.get(pubkey).once((d) => {
-          const resp = {
-            ...d,
-            avatar: profileDefault.replace("${username}", d.alias)
-          };
+    return this
+  }
 
-          this.users[uid] = resp;
-          r(resp);
-        });
-      });
-    });
+  async getUser(uid: string): Promise<PeerUser> {
+    if (this.users[uid]) {
+      return this.users[uid]
+    }
+
+    const user = await getUser(uid, db)
+
+    return user
   }
 }
