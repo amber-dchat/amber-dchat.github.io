@@ -4,6 +4,7 @@ import { formatDataStores } from '@/lib/Constants';
 import { Util } from '@/lib/utils/Utils/Util';
 import type { IGunInstance } from 'gun';
 import { Message } from '../Message/Message';
+import { getPeerCache } from '../Cache/PeerCache';
 
 export class DMChannel {
 	client: ClientUser;
@@ -22,6 +23,15 @@ export class DMChannel {
 		this._db = db;
 
 		this.__onMessage = onMessageUpdate;
+	}
+
+	async isMessageable() {
+		const cache = getPeerCache()
+		const refreshedPeer = await this.peer.refresh()
+
+		cache.set(refreshedPeer.pub, refreshedPeer)
+
+		return refreshedPeer.info.friends.includes(await this.client.getPub())
 	}
 
 	listenToMessages() {

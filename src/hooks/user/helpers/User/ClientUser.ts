@@ -5,6 +5,7 @@ import { type GunUserInstance } from '../../useMainUser';
 import { createAvatar } from '@/lib/utils/Avatar/createAvatar';
 import { PeerUser } from '../Base/PeerUser';
 import { getPeerCache } from '@/lib/Structs/Cache/PeerCache';
+import { Util } from '@/lib/utils/Utils/Util';
 
 type ClientUserOptions = {
 	preventFetch?: boolean;
@@ -25,6 +26,20 @@ export class ClientUser extends BaseUser {
 	) {
 		super(db, user, options?.preventFetch);
 		this._sea = sea;
+	}
+
+	addFriend(pub: string) {
+		if(pub.startsWith("~")) pub = pub.replace("~", "")
+		
+		return new Promise<void>((resolve, reject) => {
+			const { clear } = Util.createGunTimeoutRejection("Error: Add friends timeout", reject)
+			
+			this._user.get("friends").once((friends: string[]) => {
+				this._user.get("friends").put([...friends, pub])
+				clear()
+				resolve()
+			})
+		})
 	}
 
 	onFriendsUpdate(onUpdate: OnFriendsUpdateHandler, forceMultiple = false) {
@@ -54,6 +69,17 @@ export class ClientUser extends BaseUser {
 
 	decrypt(data: string, peerEpub: string) {
 		return EncryptionTools.decryptData(data, peerEpub, this._sea);
+	}
+
+	getPub() {
+		return new Promise<string>((resolve, reject) => {
+			const { clear } = Util.createGunTimeoutRejection("ClientUser pub timeout", reject)
+
+			this._user.get("pub").once(d => {
+				clear()
+				resolve(d)
+			})
+		})
 	}
 
 	async editUsername(name: string) {
