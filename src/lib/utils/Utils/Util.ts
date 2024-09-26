@@ -1,9 +1,9 @@
 import { TIMEOUT_DELAY } from '@/lib/Constants';
 
 export class Util {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	static createGunTimeoutRejection(
 		message: string,
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		reject: (reason: any) => void,
 	) {
 		const delay = setTimeout(() => {

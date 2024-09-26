@@ -13,7 +13,7 @@ export default defineConfig({
 		}),
 	],
 	dev: {
-		progressBar: true
+		progressBar: true,
 	},
 	html: {
 		title: 'DChatt',
