@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 
 function Entry({ user }: { user: PeerUser | ClientUser }) {
   return <CommandItem>
-    <img src={user.info?.displayName || user.info?.avatar} className="w-4 h-4 mr-2 rounded-full" />
-    <span>{user.info?.username}</span>
+    <img src={user.info?.avatar} className="w-4 h-4 mr-2 rounded-full" />
+    <span>{user.info?.displayName || user.info?.username}</span>
   </CommandItem>
 }
 
