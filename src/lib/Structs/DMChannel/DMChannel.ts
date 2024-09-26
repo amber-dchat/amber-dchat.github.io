@@ -34,8 +34,16 @@ export class DMChannel {
 		return refreshedPeer.info.friends.includes(await this.client.getPub())
 	}
 
+	/**
+	 * @example ```ts
+	 * const clean = db.listenToMessages()
+	 * // run after messages listener is no longer needed 😎
+	 * clean()
+	 * ```
+	 * @returns Event end function
+	 */
 	listenToMessages() {
-		this._db
+		const listener = this._db
 			.get(this.__createChannelQuery())
 			.map()
 			.once(async (d) => {
@@ -45,6 +53,8 @@ export class DMChannel {
 				const message = new Message(d);
 				this.__onMessage(message);
 			});
+
+		return listener.off
 	}
 
 	__createChannelQuery() {
