@@ -5,6 +5,7 @@ import {
 } from '@/components/ui/resizable';
 import { useChats } from './chatsProvider';
 import { useEffect } from 'react';
+import Chat from './components/chat';
 
 export default function Desktop() {
 	const chat = useChats();
@@ -26,7 +27,9 @@ export default function Desktop() {
 
 			<ResizableHandle withHandle />
 
-			<ResizablePanel className="h-full">This is chat area</ResizablePanel>
+			<ResizablePanel className="h-full">
+				<Chat />
+			</ResizablePanel>
 		</ResizablePanelGroup>
 	);
 }

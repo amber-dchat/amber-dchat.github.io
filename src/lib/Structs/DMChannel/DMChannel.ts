@@ -21,7 +21,7 @@ export class DMChannel {
 		this.peer = peer;
 		this._db = db;
 
-		this.__onMessage = onMessageUpdate
+		this.__onMessage = onMessageUpdate;
 
 		db.get(this.__createChannelQuery())
 			.map()
