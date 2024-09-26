@@ -1,34 +1,35 @@
-interface CacheOptions<T> {
-  prefix: string;
+interface CacheOptions {
+	prefix: string;
+	size?: number;
 }
 
 export class Cache<T> {
-  private _prefix: string;
-  private _cache: Map<string, CacheData<T>> = new Map();
+	private _prefix: string;
+	private _cache: Map<string, CacheData<T>> = new Map();
+	maxSize: number;
 
-  constructor({
-    prefix,
-  }: CacheOptions<T>) {
-    this._prefix = prefix;
-  }
+	constructor({ prefix, size = 32 }: CacheOptions) {
+		this._prefix = prefix;
+		this.maxSize = size;
+	}
 
 	get size() {
 		return this._cache.size;
 	}
 
-  get(key: string): T | undefined {
-    const rawKey = this._prefix + key;
+	get(key: string): T | undefined {
+		const rawKey = this._prefix + key;
 
-    const data = this._cache.get(rawKey);
+		const data = this._cache.get(rawKey);
 
-    if (!data) return undefined;
+		if (!data) return undefined;
 
-    data.lastAccessed = Date.now();
+		data.lastAccessed = Date.now();
 
-    this._cache.set(rawKey, data);
+		this._cache.set(rawKey, data);
 
-    return data.data;
-  }
+		return data.data;
+	}
 
 	set(key: string, data: T) {
 		const rawKey = this._prefix + key;
@@ -38,12 +39,14 @@ export class Cache<T> {
 			key: rawKey,
 		};
 
-    this._cache.set(rawKey, cacheData);
+		this._cache.set(rawKey, cacheData);
 
-		const oldest = this.findOldest();
+		if (this.size >= this.maxSize) {
+			const oldest = this.findOldest();
 
-		if (oldest && oldest?.key !== rawKey) {
-			this.remove(oldest.key);
+			if (oldest && oldest?.key !== rawKey) {
+				this.remove(oldest.key);
+			}
 		}
 
 		return data;
@@ -52,8 +55,8 @@ export class Cache<T> {
 	remove(key: string) {
 		const rawKey = this._prefix + key;
 
-    this._cache.delete(rawKey);
-  }
+		this._cache.delete(rawKey);
+	}
 
 	findOldest(): CacheData<T> | undefined {
 		return [...this._cache.values()].sort(

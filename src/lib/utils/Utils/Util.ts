@@ -20,6 +20,6 @@ export class Util {
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	static getGunKey(data: Record<string, any>) {
-		return data._["#"]
+		return data._['#'];
 	}
 }
