@@ -113,7 +113,7 @@ function ProfileForm({ className, val }: { className: string; val: string }) {
 					required
 					minLength={3}
 					maxLength={64}
-					placeholder="dchatt"
+					placeholder="Enter a username"
 					autoComplete="username"
 				/>
 			</div>

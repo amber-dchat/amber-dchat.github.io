@@ -60,7 +60,7 @@ export class AccountManager {
 		return new Promise<undefined>((resolve, reject) => {
 			if (doesExists)
 				reject(
-					'Unable to create a user account. User with this alias already exists.',
+					'Unable to create a user account. User with this username already exists.',
 				);
 
 			this._user.create(username, password, (ack) => {
