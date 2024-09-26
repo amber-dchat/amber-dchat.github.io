@@ -5,9 +5,12 @@ import {
 } from '@/components/ui/resizable';
 
 import Chat from './components/chat';
+import CommandBar from './components/chat/commmand';
+import Sidebar from './components/sidebar';
 
 export default function Desktop() {
-  return (
+  return (<>
+    <CommandBar />
     <ResizablePanelGroup direction="horizontal" className="w-full h-full">
       <ResizablePanel
         className="h-full"
@@ -15,7 +18,7 @@ export default function Desktop() {
         defaultSize={15}
         maxSize={25}
       >
-        This is sidebar
+        <Sidebar />
       </ResizablePanel>
 
       <ResizableHandle withHandle />
@@ -24,5 +27,6 @@ export default function Desktop() {
         <Chat />
       </ResizablePanel>
     </ResizablePanelGroup>
+  </>
   );
 }
