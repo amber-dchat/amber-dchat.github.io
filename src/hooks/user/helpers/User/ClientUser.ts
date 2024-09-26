@@ -3,12 +3,14 @@ import { ExperimentalSEA as EncryptionTools } from '@/lib/utils/Gun/SEA/SEA';
 import { IGunInstance, ISEAPair } from 'gun';
 import { type GunUserInstance } from '../../useMainUser';
 import { createAvatar } from '@/lib/utils/Avatar/createAvatar';
+import { PeerUser } from '../Base/PeerUser';
+import { getPeerCache } from '@/lib/Structs/Cache/PeerCache';
 
 type ClientUserOptions = {
 	preventFetch?: boolean;
 };
 
-type OnFriendsUpdateHandler = (friends: string[]) => void;
+type OnFriendsUpdateHandler = (friends: PeerUser[]) => void;
 
 export class ClientUser extends BaseUser {
 	_sea: ISEAPair;
@@ -29,7 +31,17 @@ export class ClientUser extends BaseUser {
 		if (this._isListeningForFriends && !forceMultiple) return;
 		const list = this._user.get('friends');
 
-		list.on((data: string[] /* these are gun souls */) => onUpdate(data));
+		const cache = getPeerCache();
+
+		list.on(async (data: string[] /* these are gun souls */) => {
+			const map = await Promise.all(
+				data.map((v) => {
+					if (v.startsWith('~')) v = v.replace('~', '');
+					return cache.fetch(v);
+				}),
+			);
+			onUpdate(map);
+		});
 
 		return () => {
 			list.off();

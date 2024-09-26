@@ -1,7 +1,7 @@
 // THIS IS A MOCK CHAT DATA FILE FOR UI DEVELOPMENT
 import { PeerUser } from '@/hooks/user/helpers/Base/PeerUser';
-import { db, UserContextValues } from '@/hooks/user/useMainUser';
-import { getUser } from '../Gun/Users/getUser';
+import { UserContextValues } from '@/hooks/user/useMainUser';
+import { getPeerCache } from '@/lib/Structs/Cache/PeerCache';
 
 export interface Message {
 	content: string;
@@ -16,6 +16,7 @@ export type Cache<T> = {
 export class ChatData {
 	user: UserContextValues;
 	public chats: string[] = [];
+	peerCache = getPeerCache();
 
 	public message: Cache<Message> = {};
 	public users: Cache<PeerUser> = {};
@@ -33,7 +34,7 @@ export class ChatData {
 		const refreshPromises = Object.keys(this.users);
 
 		for (const alias of refreshPromises) {
-			this.users[alias] = await getUser(alias, db);
+			this.users[alias] = await this.peerCache.fetch(alias);
 		}
 
 		return this;
@@ -44,7 +45,7 @@ export class ChatData {
 			return this.users[uid];
 		}
 
-		const user = await getUser(uid, db);
+		const user = await this.peerCache.fetch(uid);
 
 		return user;
 	}

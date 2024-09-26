@@ -1,7 +1,6 @@
 import { PeerUser } from '@/hooks/user/helpers/Base/PeerUser';
 import { Cache } from './Cache';
 import { getUser } from '@/lib/utils/Gun/Users/getUser';
-import { db } from '@/hooks/user/useMainUser';
 
 class PeerCache extends Cache<PeerUser> {
 	constructor() {
@@ -17,7 +16,7 @@ class PeerCache extends Cache<PeerUser> {
 			let peer = this.get(peerPub);
 
 			if (!peer) {
-				peer = await getUser(peerPub, db);
+				peer = await getUser(peerPub);
 
 				this.set(peer.pub, peer);
 			}
@@ -25,7 +24,7 @@ class PeerCache extends Cache<PeerUser> {
 			return peer;
 		}
 
-		return getUser(peerPub, db);
+		return getUser(peerPub);
 	}
 }
 

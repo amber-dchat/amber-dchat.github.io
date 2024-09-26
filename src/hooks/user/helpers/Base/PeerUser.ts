@@ -42,26 +42,22 @@ export interface SerializePeerUser {
 
 export class PeerUser {
 	static async fetch(id: string, gun: IGunInstance) {
-		return new PeerUser(await getRawUser(id, gun), gun);
+		return new PeerUser(await getRawUser(id, gun));
 	}
 
 	info: UserInfo;
 	epub: string;
 	pub: string;
 
-	_gun: IGunInstance;
-
-	constructor(d: PeerData, g: IGunInstance) {
+	constructor(d: PeerData) {
 		this.info = this._transformPeerData(d);
 
 		this.pub = d.pub;
 		this.epub = d.epub;
-
-		this._gun = g;
 	}
 
 	toGunUser() {
-		return this._gun.user(this.pub);
+		return db.user(this.pub);
 	}
 
 	_transformPeerData(d: PeerData): UserInfo {
@@ -77,7 +73,7 @@ export class PeerUser {
 	}
 
 	async refresh() {
-		const data = await getRawUser(this.pub, this._gun);
+		const data = await getRawUser(this.pub, db);
 		const info = this._transformPeerData(data);
 
 		this.info = info;
@@ -110,6 +106,6 @@ export class PeerUser {
 			pub: json.pub,
 		};
 
-		return new PeerUser(data, db);
+		return new PeerUser(data);
 	}
 }
