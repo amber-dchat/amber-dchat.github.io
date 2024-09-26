@@ -28,8 +28,9 @@ export class DMChannel {
 			.once(async (d) => {
 				const decrypted = await this.client.decrypt(d.content, peer.epub);
 				d.content = decrypted;
+				d.timestamp = Util.getGunKey(d);
 				const message = new Message(d);
-				onMessageUpdate(message);
+				this.__onMessage(message);
 			});
 	}
 
@@ -55,9 +56,7 @@ export class DMChannel {
 					content: secret,
 					by: d,
 				});
-				const message = new Message({ content, by: d });
-				this.__onMessage(message);
-				resolve(message);
+				resolve(undefined);
 			});
 		});
 	}
