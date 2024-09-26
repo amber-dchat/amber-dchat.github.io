@@ -1,26 +1,16 @@
-type encodeFunction<T> = (data: CacheData<T>) => string;
-type decodeFunction<T> = (data: string) => CacheData<T>;
-
-interface CacheOptions<T> {
-	encode: encodeFunction<T>;
-	decode: decodeFunction<T>;
+interface CacheOptions {
 	prefix: string;
+	size?: number;
 }
 
 export class Cache<T> {
-	private _encode: encodeFunction<T>;
-	private _decode: decodeFunction<T>;
 	private _prefix: string;
 	private _cache: Map<string, CacheData<T>> = new Map();
+	maxSize: number;
 
-	constructor({
-		encode,
-		decode,
-		prefix,
-	}: CacheOptions<T>) {
-		this._encode = encode;
-		this._decode = decode;
+	constructor({ prefix, size = 32 }: CacheOptions) {
 		this._prefix = prefix;
+		this.maxSize = size;
 	}
 
 	get size() {
@@ -29,20 +19,16 @@ export class Cache<T> {
 
 	get(key: string): T | undefined {
 		const rawKey = this._prefix + key;
-		try {
-			const data = this._cache.get(rawKey) || this._decode(localStorage.getItem(rawKey) || "");
 
-			if (!data) return undefined;
+		const data = this._cache.get(rawKey);
 
-			data.lastAccessed = Date.now();
+		if (!data) return undefined;
 
-			this._cache.set(rawKey, data);
-			localStorage.setItem(rawKey, this._encode(data));
+		data.lastAccessed = Date.now();
 
-			return data.data;
-		} catch {
-			return undefined;
-		}
+		this._cache.set(rawKey, data);
+
+		return data.data;
 	}
 
 	set(key: string, data: T) {
@@ -54,12 +40,13 @@ export class Cache<T> {
 		};
 
 		this._cache.set(rawKey, cacheData);
-		localStorage.setItem(rawKey, this._encode(cacheData));
 
-		const oldest = this.findOldest();
+		if (this.size >= this.maxSize) {
+			const oldest = this.findOldest();
 
-		if (oldest && oldest?.key !== rawKey) {
-			this.remove(oldest.key);
+			if (oldest && oldest?.key !== rawKey) {
+				this.remove(oldest.key);
+			}
 		}
 
 		return data;
@@ -69,7 +56,6 @@ export class Cache<T> {
 		const rawKey = this._prefix + key;
 
 		this._cache.delete(rawKey);
-		localStorage.removeItem(rawKey);
 	}
 
 	findOldest(): CacheData<T> | undefined {
