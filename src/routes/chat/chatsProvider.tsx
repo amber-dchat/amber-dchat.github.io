@@ -1,11 +1,17 @@
+import { usePageData } from '@/hooks';
 import { useMainUser, UserContextValues } from '@/hooks/user/useMainUser';
 import { ChatData } from '@/lib/utils/Chats/chatData';
 import { createContext, useContext } from 'react';
 
-const ChatContext = createContext<ChatData | undefined>(undefined);
+interface FullChatData {
+	data: ChatData;
+	room: string | null;
+}
 
-export function useChats(): ChatData {
-	return useContext(ChatContext) as ChatData;
+const ChatContext = createContext<FullChatData | undefined>(undefined);
+
+export function useChats(): FullChatData {
+	return useContext(ChatContext) as FullChatData;
 }
 
 export function ChatsProvider({
@@ -14,8 +20,9 @@ export function ChatsProvider({
 	children?: JSX.Element | JSX.Element[];
 }) {
 	const user = useMainUser();
+	const { search } = usePageData();
 
 	const data = new ChatData(user as UserContextValues);
 
-	return <ChatContext.Provider value={data}>{children}</ChatContext.Provider>;
+	return <ChatContext.Provider value={{ room: search.get("room"), data }}>{children}</ChatContext.Provider>;
 }
