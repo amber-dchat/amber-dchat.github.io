@@ -29,21 +29,26 @@ export class ClientUser extends BaseUser {
 	}
 
 	addFriend(pub: string) {
-		if(pub.startsWith("~")) pub = pub.replace("~", "")
-		
+		if (pub.startsWith('~')) pub = pub.replace('~', '');
+
 		return new Promise<void>((resolve, reject) => {
-			const { clear } = Util.createGunTimeoutRejection("Error: Add friends timeout", reject)
-			
-			this._user.get("friends").once((friends: string[]) => {
-				this._user.get("friends").put([...friends, pub])
-				clear()
-				resolve()
-			})
-		})
+			const { clear } = Util.createGunTimeoutRejection(
+				'Error: Add friends timeout',
+				reject,
+			);
+
+			this._user.get('friends').once((friends: string[]) => {
+				this._user.get('friends').put([...friends, pub]);
+				clear();
+				resolve();
+			});
+		});
 	}
 
 	onFriendsUpdate(onUpdate: OnFriendsUpdateHandler, forceMultiple = false) {
 		if (this._isListeningForFriends && !forceMultiple) return;
+
+		this._isListeningForFriends = true;
 		const list = this._user.get('friends');
 
 		const cache = getPeerCache();
@@ -73,13 +78,16 @@ export class ClientUser extends BaseUser {
 
 	getPub() {
 		return new Promise<string>((resolve, reject) => {
-			const { clear } = Util.createGunTimeoutRejection("ClientUser pub timeout", reject)
+			const { clear } = Util.createGunTimeoutRejection(
+				'ClientUser pub timeout',
+				reject,
+			);
 
-			this._user.get("pub").once(d => {
-				clear()
-				resolve(d)
-			})
-		})
+			this._user.get('pub').once((d) => {
+				clear();
+				resolve(d);
+			});
+		});
 	}
 
 	async editUsername(name: string) {

@@ -1,52 +1,65 @@
 // THIS IS A MOCK CHAT DATA FILE FOR UI DEVELOPMENT
 import { PeerUser } from '@/hooks/user/helpers/Base/PeerUser';
-import { UserContextValues } from '@/hooks/user/useMainUser';
+import { ClientUser } from '@/hooks/user/helpers/User/ClientUser';
+import { db, UserContextValues } from '@/hooks/user/useMainUser';
+import { Cache } from '@/lib/Structs/Cache/Cache';
 import { getPeerCache } from '@/lib/Structs/Cache/PeerCache';
-
-export interface Message {
-	content: string;
-	createdAt: number;
-	soul: string;
-}
-
-export type Cache<T> = {
-	[key: string]: T | undefined;
-};
+import { DMChannel } from '@/lib/Structs/DMChannel/DMChannel';
+import { Message } from '@/lib/Structs/Message/Message';
 
 export class ChatData {
 	user: UserContextValues;
-	public chats: string[] = [];
+	public chats: PeerUser[] = [];
 	peerCache = getPeerCache();
 
-	public message: Cache<Message> = {};
-	public users: Cache<PeerUser> = {};
+	public channels: Cache<DMChannel> = new Cache({
+		prefix: 'ch-',
+		size: Infinity,
+	});
+	public messages: Cache<Message[]> = new Cache({
+		prefix: 'msg-',
+		size: Infinity,
+	});
 
-	constructor(user: UserContextValues) {
+	constructor(user: UserContextValues, friendsUpdate: () => void) {
 		this.user = user;
+
+		this.user.userInfo?.onFriendsUpdate((friends) => {
+			friendsUpdate();
+			this.chats = friends;
+		});
 	}
 
-	async getChats() {
-		this.chats = ['ahqsoftwares', 'shisui'];
+	getFriends() {
+		return this.chats;
 	}
 
 	// This will likely explode once we add group DMs
-	async refreshCache() {
-		const refreshPromises = Object.keys(this.users);
 
-		for (const alias of refreshPromises) {
-			this.users[alias] = await this.peerCache.fetch(alias);
-		}
+	// OUT OF DATE
+	refreshCache() { }
 
-		return this;
+	async getChannel(uid: string, update: () => void): Promise<DMChannel> {
+		this.messages.set(uid, []);
+
+		const cache = this.channels.get(uid);
+
+		if (cache) return cache;
+
+		const channel = new DMChannel(
+			this.user.userInfo as ClientUser,
+			await this.peerCache.fetch(uid, true),
+			db,
+			async (msg) => {
+				this.messages.get(uid)?.push(msg);
+				update();
+			},
+		);
+
+		return channel;
 	}
 
-	async getUser(uid: string): Promise<PeerUser> {
-		if (this.users[uid]) {
-			return this.users[uid];
-		}
-
-		const user = await this.peerCache.fetch(uid);
-
-		return user;
+	getMessages(uid: string): Message[] {
+		return this.messages.get(uid) || [];
 	}
 }

@@ -1,0 +1,57 @@
+.markdown h1 {
+	@apply text-3xl;
+}
+
+.markdown h2 {
+	@apply text-2xl;
+}
+
+.markdown h3 {
+	@apply text-xl;
+}
+
+.markdown h4 {
+	@apply text-lg;
+}
+
+.markdown h5,
+.markdown h6 {
+	@apply text-base;
+}
+
+.markdown p {
+	@apply text-base;
+}
+
+.markdown ul {
+	@apply list-disc;
+}
+
+.markdown ol {
+	@apply list-decimal;
+}
+
+.markdown li {
+	@apply ml-4;
+}
+
+.markdown blockquote {
+	@apply border-l-4 border-gray-400 pl-4 text-base;
+}
+
+.markdown code {
+	@apply bg-gray-100 text-gray-800 rounded-md px-1 py-0.5;
+}
+
+.markdown pre {
+	@apply bg-gray-100 text-gray-800 rounded-md p-4;
+}
+
+.markdown pre {
+	@apply border-[1px] border-background;
+}
+
+.markdown pre,
+.markdown code {
+	@apply bg-accent text-secondary-foreground;
+}
