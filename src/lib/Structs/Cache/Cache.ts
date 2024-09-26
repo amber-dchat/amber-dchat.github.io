@@ -23,6 +23,10 @@ export class Cache<T> {
     this._prefix = prefix;
   }
 
+  get size() {
+    return this._cache.size;
+  }
+
   get(key: string): T | undefined {
     const rawKey = this._prefix + key;
     try {
