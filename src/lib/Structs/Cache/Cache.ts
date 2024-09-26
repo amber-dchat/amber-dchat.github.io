@@ -13,18 +13,24 @@ export class Cache<T> {
 	private _prefix: string;
 	private _cache: Map<string, CacheData<T>> = new Map();
 
-	constructor({ encode, decode, prefix }: CacheOptions<T>) {
+	constructor({
+		encode,
+		decode,
+		prefix,
+	}: CacheOptions<T>) {
 		this._encode = encode;
 		this._decode = decode;
 		this._prefix = prefix;
 	}
 
+	get size() {
+		return this._cache.size;
+	}
+
 	get(key: string): T | undefined {
 		const rawKey = this._prefix + key;
 		try {
-			const data =
-				this._cache.get(rawKey) ||
-				this._decode(localStorage.getItem(rawKey) || '');
+			const data = this._cache.get(rawKey) || this._decode(localStorage.getItem(rawKey) || "");
 
 			if (!data) return undefined;
 
