@@ -17,7 +17,7 @@ export class ExperimentalSEA {
 	) {
 		const secret = await GunSEA.secret(peerEpub, mySea);
 
-		if (secret) return GunSEA.encrypt(encrypted, secret);
+		if (secret) return GunSEA.decrypt(encrypted, secret);
 
 		throw new Error('Unable to decrypt data');
 	}

@@ -63,6 +63,8 @@ export class ChatData {
 		);
 		this.currentCHannelCancel = channel.listenToMessages();
 
+		channel.listenToMessages()
+
 		return channel;
 	}
 
