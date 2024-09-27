@@ -43,13 +43,13 @@ export class DMChannel {
 	 * @returns Event end function
 	 */
 	listenToMessages() {
-		console.log(this.__createChannelQuery())
 		const listener = this._db
 			.get(this.__createChannelQuery())
 			.map()
 			.once(async (d) => {
 				if(!d) return
 				const decrypted = await this.client.decrypt(d.content, this.peer.epub);
+				console.log(decrypted)
 				d.content = decrypted;
 				d.timestamp = Util.getGunKey(d);
 				const message = new Message(d);

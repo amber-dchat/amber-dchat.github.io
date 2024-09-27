@@ -58,6 +58,8 @@ export class ChatData {
 			},
 		);
 
+		channel.listenToMessages()
+
 		return channel;
 	}
 
