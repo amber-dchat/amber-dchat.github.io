@@ -24,7 +24,7 @@ export default defineConfig({
 	},
 	tools: {
 		rspack: {
-			ignoreWarnings: [/Critical/g, /parse/g],
+			ignoreWarnings: [/Critical/g, /parse/g, /dependency/g],
 		},
 	},
 });

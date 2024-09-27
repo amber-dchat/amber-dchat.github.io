@@ -42,8 +42,8 @@ export default function Chat() {
 					className="resize-none md:max-h-40 md:field-size-content"
 					placeholder={`Type your message here ${useMediaQuery('(min-width: 468px)') ? '(Markdown is supported)' : ''}`}
 					required
-					minLength={3}
-					maxLength={1024}
+					minLength={1}
+					maxLength={4096}
 					onKeyDown={(e) => {
 						if (e.key == 'Enter' && !e.shiftKey) {
 							e.preventDefault();
