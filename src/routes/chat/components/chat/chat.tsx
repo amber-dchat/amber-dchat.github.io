@@ -11,11 +11,11 @@ import {
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { Message } from '@/lib/structs/Message/Message';
 import { toast } from 'sonner';
 import { useMessages } from '../../messagesProvider';
+import { ResolvedMessage } from '@/lib/utils/Chats/chatData';
 
-function ChatEntry({ msg }: { msg: Message }) {
+function ChatEntry({ msg: { msg, author } }: { msg: ResolvedMessage }) {
 	const [data, setData] = useState(false);
 	const skeleton = useRef<HTMLDivElement>(null);
 
@@ -47,13 +47,13 @@ function ChatEntry({ msg }: { msg: Message }) {
 			<ContextMenuTrigger>
 				<div className="flex space-x-2 transition-colors md:hover:bg-secondary p-3 rounded-xl">
 					<img
-						src="/favicon.png"
+						src={author.info?.avatar}
 						className="rounded-full w-16 h-16 cursor-pointer mt-1"
 					/>
 					<div className="w-full flex flex-col">
 						<h1 className="flex w-full">
 							<span className="cursor-pointer hover:underline mr-3 text-red-500">
-								AHQ Softwares
+								{author.info?.displayName || author.info?.username}
 							</span>
 
 							<span className="text-xs my-auto text-accent-foreground">
@@ -133,7 +133,7 @@ export default function ChatBubbles() {
 					</div>
 
 					{msg.messages.map((msg, i) => (
-						<ChatEntry key={i + msg.content} msg={msg} />
+						<ChatEntry key={i + msg.msg.content} msg={msg} />
 					))}
 				</>
 			) : (

@@ -2,16 +2,21 @@
 import { PeerUser } from '@/hooks/user/helpers/Base/PeerUser';
 import { ClientUser } from '@/hooks/user/helpers/User/ClientUser';
 import { db, UserContextValues } from '@/hooks/user/useMainUser';
-import { getPeerCache } from '@/lib/structs/cache/PeerCache';
+import { getPeerCache } from '@/lib/structs/Cache/PeerCache';
 import { DMChannel } from '@/lib/structs/DMChannel/DMChannel';
 import { Message } from '@/lib/structs/Message/Message';
+
+export interface ResolvedMessage {
+	author: PeerUser | ClientUser;
+	msg: Message;
+}
 
 export class ChatData {
 	user: UserContextValues;
 	public chats: PeerUser[] = [];
 	public peerCache = getPeerCache();
 
-	public messages: Message[] = [];
+	public messages: ResolvedMessage[] = [];
 
 	public currentChannelCancel = () => { };
 
@@ -35,7 +40,7 @@ export class ChatData {
 	// OUT OF DATE
 	refreshCache() { }
 
-	async getChannel(uid: string, update: (msg: Message[]) => void): Promise<DMChannel> {
+	async getChannel(uid: string, update: (msg: ResolvedMessage[]) => void): Promise<DMChannel> {
 		this.currentChannelCancel();
 
 		this.messages = [];
@@ -47,7 +52,11 @@ export class ChatData {
 			peer,
 			db,
 			async (msg) => {
-				this.messages.push(msg);
+				let author: ClientUser | PeerUser = this.user.userInfo as ClientUser;
+				if (channel.peer.pub == msg.author) {
+					author = channel.peer as PeerUser;
+				}
+				this.messages.push({ author, msg });
 				update(this.messages);
 			},
 		);
