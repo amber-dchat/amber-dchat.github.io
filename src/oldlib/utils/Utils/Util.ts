@@ -1,4 +1,4 @@
-import { TIMEOUT_DELAY } from '@/lib/Constants';
+import { TIMEOUT_DELAY } from '@/oldlib/Constants';
 
 export class Util {
 	static createGunTimeoutRejection(

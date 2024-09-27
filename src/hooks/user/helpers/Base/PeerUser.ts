@@ -1,4 +1,4 @@
-import { Util } from '@/lib/utils/Utils/Util';
+import { Util } from '@/oldlib/utils/Utils/Util';
 import type { IGunInstance } from 'gun';
 import { UserInfo, UserKeys } from './BaseUser';
 import { db } from '../../useMainUser';

@@ -1,5 +1,5 @@
-import { DMChannel } from "@/lib/Structs/DMChannel/DMChannel";
-import { Message } from "@/lib/Structs/Message/Message";
+import { DMChannel } from "@/oldlib/Structs/DMChannel/DMChannel";
+import { Message } from "@/oldlib/Structs/Message/Message";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useChats } from "./chatsProvider";
 

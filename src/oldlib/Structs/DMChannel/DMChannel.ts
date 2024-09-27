@@ -1,7 +1,7 @@
 import { PeerUser } from '@/hooks/user/helpers/Base/PeerUser';
 import { ClientUser } from '@/hooks/user/helpers/User/ClientUser';
-import { formatDataStores } from '@/lib/Constants';
-import { Util } from '@/lib/utils/Utils/Util';
+import { formatDataStores } from '@/oldlib/Constants';
+import { Util } from '@/oldlib/utils/Utils/Util';
 import type { IGunInstance } from 'gun';
 import { Message } from '../Message/Message';
 import { getPeerCache } from '../Cache/PeerCache';

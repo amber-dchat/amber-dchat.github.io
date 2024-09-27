@@ -10,7 +10,7 @@ import { RiUserAddLine } from 'react-icons/ri';
 import { navigate } from '@/hooks';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { getUser } from '@/lib/utils/Gun/Users/getUser';
+import { getUser } from '@/oldlib/utils/Gun/Users/getUser';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 

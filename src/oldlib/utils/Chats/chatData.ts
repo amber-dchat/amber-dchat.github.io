@@ -2,10 +2,10 @@
 import { PeerUser } from '@/hooks/user/helpers/Base/PeerUser';
 import { ClientUser } from '@/hooks/user/helpers/User/ClientUser';
 import { db, UserContextValues } from '@/hooks/user/useMainUser';
-import { Cache } from '@/lib/Structs/Cache/Cache';
-import { getPeerCache } from '@/lib/Structs/Cache/PeerCache';
-import { DMChannel } from '@/lib/Structs/DMChannel/DMChannel';
-import { Message } from '@/lib/Structs/Message/Message';
+import { Cache } from '@/oldlib/Structs/Cache/Cache';
+import { getPeerCache } from '@/oldlib/Structs/Cache/PeerCache';
+import { DMChannel } from '@/oldlib/Structs/DMChannel/DMChannel';
+import { Message } from '@/oldlib/Structs/Message/Message';
 
 export class ChatData {
 	user: UserContextValues;

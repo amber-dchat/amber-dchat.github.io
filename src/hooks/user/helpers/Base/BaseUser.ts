@@ -1,6 +1,6 @@
 import { IGunInstance } from 'gun';
 import type { GunUserInstance } from '../../useMainUser';
-import { Util } from '@/lib/utils/Utils/Util';
+import { Util } from '@/oldlib/utils/Utils/Util';
 
 export interface UserInfo {
 	username: string;

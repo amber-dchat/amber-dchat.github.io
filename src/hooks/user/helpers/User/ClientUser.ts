@@ -1,11 +1,11 @@
 import { BaseUser, UserKeys } from '../Base/BaseUser';
-import { ExperimentalSEA as EncryptionTools } from '@/lib/utils/Gun/SEA/SEA';
+import { ExperimentalSEA as EncryptionTools } from '@/oldlib/utils/Gun/SEA/SEA';
 import { IGunInstance, ISEAPair } from 'gun';
 import { type GunUserInstance } from '../../useMainUser';
-import { createAvatar } from '@/lib/utils/Avatar/createAvatar';
+import { createAvatar } from '@/oldlib/utils/Avatar/createAvatar';
 import { PeerUser } from '../Base/PeerUser';
-import { getPeerCache } from '@/lib/Structs/Cache/PeerCache';
-import { Util } from '@/lib/utils/Utils/Util';
+import { getPeerCache } from '@/oldlib/Structs/Cache/PeerCache';
+import { Util } from '@/oldlib/utils/Utils/Util';
 
 type ClientUserOptions = {
 	preventFetch?: boolean;

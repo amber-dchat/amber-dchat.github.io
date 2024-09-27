@@ -1,6 +1,6 @@
 import NavigationBar from '@/components/nav';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/oldlib/utils';
 
 export const LoadingSpinner = ({ className }: { className?: string }) => (
 	<svg

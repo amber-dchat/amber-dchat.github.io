@@ -1,7 +1,7 @@
 import { usePageData } from '@/hooks';
 import { PeerUser } from '@/hooks/user/helpers/Base/PeerUser';
 import { useMainUser, UserContextValues } from '@/hooks/user/useMainUser';
-import { ChatData } from '@/lib/utils/Chats/chatData';
+import { ChatData } from '@/oldlib/utils/Chats/chatData';
 import { createContext, useContext, useState } from 'react';
 
 interface FullChatData {

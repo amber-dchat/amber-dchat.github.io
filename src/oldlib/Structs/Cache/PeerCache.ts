@@ -1,6 +1,6 @@
 import { PeerUser } from '@/hooks/user/helpers/Base/PeerUser';
 import { Cache } from './Cache';
-import { getUser } from '@/lib/utils/Gun/Users/getUser';
+import { getUser } from '@/oldlib/utils/Gun/Users/getUser';
 
 class PeerCache extends Cache<PeerUser> {
 	constructor() {

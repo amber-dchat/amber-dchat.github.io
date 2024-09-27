@@ -8,7 +8,7 @@ import "gun/lib/yson";
 import 'gun/sea';
 import { useState, useContext, createContext } from 'react';
 import { ClientUser } from './helpers/User/ClientUser';
-import { AccountManager } from '@/lib/utils/Gun/Accounts/Account';
+import { AccountManager } from '@/oldlib/utils/Gun/Accounts/Account';
 
 export interface FetchUserData {
 	alias: string;

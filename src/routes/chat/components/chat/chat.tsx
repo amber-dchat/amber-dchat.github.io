@@ -11,7 +11,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { Message } from '@/lib/Structs/Message/Message';
+import { Message } from '@/oldlib/Structs/Message/Message';
 import { toast } from 'sonner';
 import { useMessages } from '../../messagesProvider';
 
