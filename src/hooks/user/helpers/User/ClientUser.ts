@@ -29,12 +29,21 @@ export class ClientUser extends BaseUser {
 	}
 
 	async addFriend(pub: string) {
-		if(pub.startsWith("~")) pub = pub.replace("~", "")
+		if (pub.startsWith("~")) pub = pub.replace("~", "")
 		const cache = getPeerCache()
 
 		const peer = await cache.fetch(pub);
-		
+
 		this._user.get("friends").get(peer.info.username).put(peer.pub);
+	}
+
+	async removeFriend(pub: string) {
+		if (pub.startsWith("~")) pub = pub.replace("~", "")
+		const cache = getPeerCache()
+
+		const peer = await cache.fetch(pub);
+
+		this._user.get("friends").get(peer.info.username).put("%removed%");
 	}
 
 	onFriendsUpdate(onUpdate: OnFriendsUpdateHandler, forceMultiple = false) {
@@ -46,10 +55,12 @@ export class ClientUser extends BaseUser {
 		const cache = getPeerCache();
 
 		list.on(async (data: Record<string, string> /* these are gun souls */) => {
+			console.log("f", data);
 			delete data._
 
 			const map = await Promise.all(
 				Object.values(data).map((v) => {
+					console.log("v", v);
 					if (v.startsWith('~')) v = v.replace('~', '');
 					return cache.fetch(v);
 				}),
