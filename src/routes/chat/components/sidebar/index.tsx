@@ -22,7 +22,7 @@ function Entry({
   you?: boolean;
 }) {
   return (
-    <div className='w-full flex'>
+    <div className='w-full flex space-x-1'>
       <Button
         variant="ghost"
         className="justify-start w-full"
@@ -33,7 +33,7 @@ function Entry({
           {user.info?.displayName || user.info?.username} {you && '(You)'}
         </span>
       </Button>
-      {!you && <Button variant={"secondary"} className='w-8 h-8 text-white'>
+      {!you && <Button variant={"secondary"} className='w-10 my-auto text-white'>
         R
       </Button>}
     </div>
@@ -71,7 +71,8 @@ export default function Sidebar() {
               const val = input.current?.value as string;
 
               //if (input.current) input.current.value = '';
-              const user = await data.peerCache.fetch(`@${val}`).then(d => d.pub);
+              const user = await getUser(`@${val}`).then(d => d.pub);
+              console.log("Pubkey", user);
 
               data.user.userInfo?.addFriend(user)
                 .then(() => {

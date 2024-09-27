@@ -4,6 +4,7 @@ import 'gun/lib/radix';
 import 'gun/lib/radisk';
 import 'gun/lib/store';
 import 'gun/lib/rindexed';
+import "gun/lib/yson";
 import 'gun/sea';
 import { useState, useContext, createContext } from 'react';
 import { ClientUser } from './helpers/User/ClientUser';
@@ -45,8 +46,6 @@ export const db = GUN({
 	peers: [
 		'https://gun-manhattan.herokuapp.com/gun',
 		`https://gundb-relay-mlccl.ondigitalocean.app/gun`,
-		`https://peer.wallie.io/gun`,
-		`https://plankton-app-6qfp3.ondigitalocean.app/gun`
 	], // TODO: Add our own servers instead of gun relays
 	localStorage: false, // Only use indexeddb
 });
