@@ -1,4 +1,4 @@
-import { getPeerCache } from '../Cache/PeerCache';
+import { getPeerCache } from '../cache/PeerCache';
 
 export type MessageStructure = {
 	content: string;

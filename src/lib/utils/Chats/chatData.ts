@@ -2,7 +2,7 @@
 import { PeerUser } from '@/hooks/user/helpers/Base/PeerUser';
 import { ClientUser } from '@/hooks/user/helpers/User/ClientUser';
 import { db, UserContextValues } from '@/hooks/user/useMainUser';
-import { getPeerCache } from '@/lib/structs/Cache/PeerCache';
+import { getPeerCache } from '@/lib/structs/cache/PeerCache';
 import { DMChannel } from '@/lib/structs/DMChannel/DMChannel';
 import { Message } from '@/lib/structs/Message/Message';
 

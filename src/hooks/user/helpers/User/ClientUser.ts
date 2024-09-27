@@ -4,7 +4,7 @@ import { IGunInstance, ISEAPair } from 'gun';
 import { type GunUserInstance } from '../../useMainUser';
 import { createAvatar } from '@/lib/utils/Avatar/createAvatar';
 import { PeerUser } from '../Base/PeerUser';
-import { getPeerCache } from '@/lib/structs/Cache/PeerCache';
+import { getPeerCache } from '@/lib/structs/cache/PeerCache';
 import { Util } from '@/lib/utils/Utils/Util';
 
 type ClientUserOptions = {
