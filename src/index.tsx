@@ -13,9 +13,9 @@ const rootEl = document.getElementById('root');
 if (rootEl) {
 	const root = ReactDOM.createRoot(rootEl);
 	root.render(
-		<React.StrictMode>
+		<React.Fragment>
 			<input type="file" id="avatar" accept="image/*" multiple={false} hidden />
 			<App />
-		</React.StrictMode>,
+		</React.Fragment>,
 	);
 }

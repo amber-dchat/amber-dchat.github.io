@@ -33,7 +33,6 @@ export function usePage() {
 
 	useEffect(() => {
 		window.addEventListener('popstate', (event: PopStatefulEvent) => {
-			console.log('pop state', event.state);
 			setPathname(event.state?.pathname || '/');
 		});
 		callbacks.push(({ pathname }) => {
@@ -79,7 +78,6 @@ export function usePageData(): PageData {
 
 	useEffect(() => {
 		window.addEventListener('popstate', (event: PopStatefulEvent) => {
-			console.log('pop state 2', event.state);
 			if (event.state)
 				setData({
 					search: new URLSearchParams(event.state?.search),
@@ -100,8 +98,9 @@ export function usePageData(): PageData {
 	return data;
 }
 
-export function navigate(path: string) {
+export function navigate(path: string, reload = false) {
 	const url = new URL(path, window.location.origin);
+
 	window.history.pushState(
 		{
 			pathname: url.pathname || '/',
@@ -110,6 +109,8 @@ export function navigate(path: string) {
 		'',
 		url,
 	);
+
+	if (reload) window.location.reload();
 
 	callbacks.forEach((v) =>
 		v({ pathname: url.pathname || '/', query: url.search }),

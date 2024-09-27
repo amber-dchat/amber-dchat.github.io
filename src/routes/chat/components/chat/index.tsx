@@ -10,7 +10,7 @@ import ChatBubbles from './chat';
 import { useMessages } from '../../messagesProvider';
 
 export default function Chat() {
-	const form = useRef<HTMLFormElement>(null);
+	const textarea = useRef<HTMLTextAreaElement>(null);
 	const { room } = useChats();
 	const msg = useMessages();
 
@@ -26,15 +26,18 @@ export default function Chat() {
 			{/* Chat Box */}
 			<form
 				className="min-h-10 max-h-10 md:max-h-40 flex w-full gap-2 px-2"
-				ref={form}
 				onSubmit={(ev) => {
 					ev.preventDefault();
-					const val = ev.currentTarget.querySelector<HTMLTextAreaElement>(
-						'textarea',
-					)?.value as string;
 
-					if (msg) {
-						msg.channel?.send(val);
+					if (textarea.current) {
+						const txt = textarea.current;
+
+						const val = txt.value as string;
+						txt.value = "";
+
+						if (msg) {
+							msg.channel?.send(val);
+						}
 					}
 				}}
 			>
@@ -42,6 +45,7 @@ export default function Chat() {
 					className="resize-none md:max-h-40 md:field-size-content"
 					placeholder={`Type your message here ${useMediaQuery('(min-width: 468px)') ? '(Markdown is supported)' : ''}`}
 					required
+					ref={textarea}
 					minLength={1}
 					maxLength={4096}
 					onKeyDown={(e) => {

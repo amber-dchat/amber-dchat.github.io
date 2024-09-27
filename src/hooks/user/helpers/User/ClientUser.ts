@@ -24,7 +24,6 @@ export class ClientUser extends BaseUser {
 		user: GunUserInstance,
 		options?: ClientUserOptions,
 	) {
-		console.log('ClientUser made');
 		super(db, user, options?.preventFetch);
 		this._sea = sea;
 	}

@@ -18,13 +18,13 @@ export class ChatData {
 
 	public messages: ResolvedMessage[] = [];
 
-	public currentChannelCancel = () => { };
+	// Stores Channel
+	public chPub: string | undefined;
 
 	constructor(user: UserContextValues, friendsUpdate: () => void) {
 		this.user = user;
 
 		this.user.userInfo?.onFriendsUpdate((friends) => {
-			console.log('Fix', friends);
 			this.chats = friends;
 
 			friendsUpdate();
@@ -40,8 +40,10 @@ export class ChatData {
 	// OUT OF DATE
 	refreshCache() { }
 
-	async getChannel(uid: string, update: (msg: ResolvedMessage[]) => void): Promise<DMChannel> {
-		this.currentChannelCancel();
+	async getChannel(uid: string, update: (msg: ResolvedMessage) => void): Promise<DMChannel> {
+		if (this.chPub == uid) {
+			throw new Error("Don't");
+		}
 
 		this.messages = [];
 
@@ -57,13 +59,14 @@ export class ChatData {
 					author = channel.peer as PeerUser;
 				}
 				this.messages.push({ author, msg });
-				update(this.messages);
+
+				update({ author, msg });
 			},
 		);
-		this.currentChannelCancel = channel.listenToMessages();
 
 		channel.listenToMessages()
 
+		this.chPub = channel.peer.pub;
 		return channel;
 	}
 }

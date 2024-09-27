@@ -50,7 +50,6 @@ export default function CommandBar() {
 					<CommandItem
 						accessKey="logout"
 						onSelect={() => {
-							console.log('Logout Clicked');
 							account.logout();
 						}}
 					>

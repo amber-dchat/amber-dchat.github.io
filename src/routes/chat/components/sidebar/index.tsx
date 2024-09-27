@@ -33,7 +33,7 @@ function Entry({
 			<Button
 				variant="ghost"
 				className="justify-start w-full"
-				onClick={() => navigate(`/?room=${user.info?.username}`)}
+				onClick={() => navigate(`/?room=${user.info?.username}`, true)}
 			>
 				<img src={user.info?.avatar} className="w-6 h-6 mr-2 rounded-full" />
 				<span>
@@ -80,7 +80,6 @@ export default function Sidebar() {
 
 								//if (input.current) input.current.value = '';
 								const user = await getUser(`@${val}`).then((d) => d.pub);
-								console.log('Pubkey', user);
 
 								data.user.userInfo
 									?.addFriend(user)

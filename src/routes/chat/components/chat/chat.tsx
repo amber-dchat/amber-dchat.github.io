@@ -1,9 +1,7 @@
 import './chat.css';
 
-import { Skeleton } from '@/components/ui/skeleton';
-
 import ReactMarkdown from 'react-markdown';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Copy, Lock, Pen, Trash2 } from 'lucide-react';
 import {
 	ContextMenu,
@@ -16,33 +14,25 @@ import { useMessages } from '../../messagesProvider';
 import { ResolvedMessage } from '@/lib/utils/Chats/chatData';
 
 function ChatEntry({ msg: { msg, author } }: { msg: ResolvedMessage }) {
-	const [data, setData] = useState(false);
-	const skeleton = useRef<HTMLDivElement>(null);
+	// const skeleton = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
-		if (skeleton.current) {
-			const observer = new IntersectionObserver((ev) =>
-				ev.forEach((ev) => {
-					if (ev.isIntersecting) {
-						observer.unobserve(skeleton.current as HTMLDivElement);
-						setTimeout(() => {
-							setData(true);
-						}, 200);
-					}
-				}),
-			);
-			observer.observe(skeleton.current);
-		}
-	}, []);
+	// useEffect(() => {
+	// 	if (skeleton.current) {
+	// 		const observer = new IntersectionObserver((ev) =>
+	// 			ev.forEach((ev) => {
+	// 				if (ev.isIntersecting) {
+	// 					observer.unobserve(skeleton.current as HTMLDivElement);
+	// 					setTimeout(() => {
+	// 						setData(true);
+	// 					}, 200);
+	// 				}
+	// 			}),
+	// 		);
+	// 		observer.observe(skeleton.current);
+	// 	}
+	// }, []);
 
-	return !data ? (
-		<Skeleton
-			// @ts-expect-error ref does exist on Skeleton
-			ref={skeleton}
-			className="w-full h-16 min-h-16"
-			onContextMenu={(e) => e.preventDefault()}
-		/>
-	) : (
+	return (
 		<ContextMenu>
 			<ContextMenuTrigger>
 				<div className="flex space-x-2 transition-colors md:hover:bg-secondary p-3 rounded-xl">
@@ -118,7 +108,7 @@ export default function ChatBubbles() {
 		if (chats.current) {
 			chats.current.scrollTop = chats.current.scrollHeight;
 		}
-	}, []);
+	}, [msg]);
 
 	return (
 		<div

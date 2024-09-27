@@ -49,7 +49,7 @@ export class DMChannel {
 			.once(async (d) => {
 				if (!d) return
 				const decrypted = await this.client.decrypt(d.content, this.peer.epub);
-				console.log(decrypted)
+
 				d.content = decrypted;
 				d.timestamp = Util.getGunKey(d);
 				const message = new Message(d);

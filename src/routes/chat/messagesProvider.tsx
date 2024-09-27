@@ -1,5 +1,5 @@
 import { DMChannel } from '@/lib/structs/DMChannel/DMChannel';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useReducer, useState } from 'react';
 import { useChats } from './chatsProvider';
 import { ResolvedMessage } from '@/lib/utils/Chats/chatData';
 
@@ -14,19 +14,30 @@ export function useMessages() {
 	return useContext(MessageProvider);
 }
 
+const handler = (state: ResolvedMessage[], data: ResolvedMessage | ResolvedMessage[]) => {
+	if (Array.isArray(data)) {
+		return data;
+	}
+
+
+	const arr = [...state, data];
+	arr.sort((a, b) => a.msg.timestamp.getTime() - b.msg.timestamp.getTime());
+
+	return arr;
+}
+
 export function Messages({ children }: { children: JSX.Element }) {
 	const { room, data } = useChats();
 
-	const [messages, setMessage] = useState<ResolvedMessage[]>([]);
+	const [messages, dispatch] = useReducer(handler, [] as ResolvedMessage[], (a) => a);
 	const [channel, setChannel] = useState<DMChannel | null>(null);
 
 	useEffect(() => {
 		if (room && data) {
-			setMessage([]);
 			(async () => {
-				console.log(`Room ${room}`);
+				dispatch([]);
 				const channel = await data.getChannel(`@${room}`, (msg) => {
-					setMessage(msg.sort((a, b) => a.msg.timestamp.getTime() - b.msg.timestamp.getTime()));
+					dispatch(msg);
 				});
 
 				setChannel(channel);

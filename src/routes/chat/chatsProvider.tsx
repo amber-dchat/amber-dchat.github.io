@@ -28,7 +28,6 @@ export function ChatsProvider({
 
 	const data = new ChatData(user as UserContextValues, () => {
 		setFriends(data.getFriends());
-		console.log('Friends updated, now: ', data.getFriends());
 	});
 
 	return (
