@@ -31,12 +31,7 @@ export class DMChannel {
 
 		cache.set(refreshedPeer.pub, refreshedPeer);
 
-		// @ts-expect-error Flippinf shit
-		return (
-			(await this.client.createPromiseGunGetUser('friends'))[
-				await this.client.getPub()
-			] != null
-		);
+		return this.client.info?.friends.includes(refreshedPeer.pub)
 	}
 
 	/**
@@ -48,10 +43,12 @@ export class DMChannel {
 	 * @returns Event end function
 	 */
 	listenToMessages() {
+		console.log(this.__createChannelQuery())
 		const listener = this._db
 			.get(this.__createChannelQuery())
 			.map()
 			.once(async (d) => {
+				if(!d) return
 				const decrypted = await this.client.decrypt(d.content, this.peer.epub);
 				d.content = decrypted;
 				d.timestamp = Util.getGunKey(d);
@@ -64,7 +61,7 @@ export class DMChannel {
 
 	__createChannelQuery() {
 		return formatDataStores(
-			`${this.client._sea.epub}-C-${this.peer.epub}`,
+			[this.client._sea.epub, this.peer.epub].sort().join("-C-"),
 			'chat',
 		);
 	}
