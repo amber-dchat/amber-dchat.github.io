@@ -81,6 +81,7 @@ export class BaseUser {
 			{} as Record<string, string>,
 		) as Promise<Record<string, string>>;
 
+		console.log("Polling");
 		const [bio, avatar, displayName, rawFriends] = await Promise.all([
 			bioPro,
 			avatarPro,
@@ -88,6 +89,7 @@ export class BaseUser {
 			friendsPro,
 		]);
 
+		console.log("Got data");
 		const friends = JSON.parse(JSON.stringify(rawFriends)) as { [key: string]: string };
 		console.log("Re", friends)
 		delete friends._
