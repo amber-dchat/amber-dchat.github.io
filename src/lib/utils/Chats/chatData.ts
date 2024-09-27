@@ -24,10 +24,11 @@ export class ChatData {
 	constructor(user: UserContextValues, friendsUpdate: () => void) {
 		this.user = user;
 
-		console.log(this.user.userInfo?.info?.friends);
 		this.user.userInfo?.onFriendsUpdate((friends) => {
-			friendsUpdate();
+			console.log("Fix", friends);
 			this.chats = friends;
+
+			friendsUpdate();
 		});
 	}
 

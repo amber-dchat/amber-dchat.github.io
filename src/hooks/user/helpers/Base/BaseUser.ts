@@ -81,13 +81,15 @@ export class BaseUser {
 			{} as Record<string, string>,
 		) as Promise<Record<string, string>>;
 
-		const [bio, avatar, displayName, friends] = await Promise.all([
+		const [bio, avatar, displayName, rawFriends] = await Promise.all([
 			bioPro,
 			avatarPro,
 			displaynamePro,
 			friendsPro,
 		]);
 
+		const friends = JSON.parse(JSON.stringify(rawFriends)) as { [key: string]: string };
+		console.log("Re", friends)
 		delete friends._
 
 		const userData: UserInfo = {

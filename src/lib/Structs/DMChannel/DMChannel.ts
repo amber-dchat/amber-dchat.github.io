@@ -31,7 +31,8 @@ export class DMChannel {
 
 		cache.set(refreshedPeer.pub, refreshedPeer);
 
-		return refreshedPeer.info.friends.includes(await this.client.getPub());
+		// @ts-expect-error Flippinf shit
+		return (await this.client.createPromiseGunGetUser("friends"))[await this.client.getPub()] != null;
 	}
 
 	/**

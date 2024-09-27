@@ -54,13 +54,12 @@ export class ClientUser extends BaseUser {
 
 		const cache = getPeerCache();
 
-		list.on(async (data: Record<string, string> /* these are gun souls */) => {
-			console.log("f", data);
+		list.on(async (d: Record<string, string> /* these are gun souls */) => {
+			const data = JSON.parse(JSON.stringify(d)) as { [key: string]: string };
 			delete data._
 
 			const map = await Promise.all(
 				Object.values(data).map((v) => {
-					console.log("v", v);
 					if (v.startsWith('~')) v = v.replace('~', '');
 					return cache.fetch(v);
 				}),
