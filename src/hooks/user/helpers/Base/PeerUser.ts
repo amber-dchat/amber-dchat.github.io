@@ -23,8 +23,20 @@ export async function getRawUser(alias: string, gun: IGunInstance) {
 		gun.get(`~${alias}`).once((d) => {
 			if (isFromPub) {
 				clear();
-				resolve(d);
-				return;
+				if(!d) {
+					gun.get(`~${alias}`).once(data => {
+						if(!data) {
+							clear()
+							reject("no users found")
+						}
+						clear()
+						resolve(data)
+					})
+				} else {
+					clear();
+					resolve(d);
+					return;
+				}
 			}
 			gun.get(Object.keys(d._['>'])[0]).once((user) => {
 				clear();
