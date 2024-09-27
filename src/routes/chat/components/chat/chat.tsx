@@ -11,7 +11,7 @@ import {
 	ContextMenuItem,
 	ContextMenuTrigger,
 } from '@/components/ui/context-menu';
-import { Message } from '@/lib/Structs/Message/Message';
+import { Message } from '@/lib/structs/Message/Message';
 import { toast } from 'sonner';
 import { useMessages } from '../../messagesProvider';
 
@@ -65,7 +65,7 @@ function ChatEntry({ msg }: { msg: Message }) {
 							</span>
 						</h1>
 
-						<div className="markdown w-full">
+						<div className="markdown w-full overflow-x-clip">
 							<ReactMarkdown>{msg.content}</ReactMarkdown>
 						</div>
 					</div>
