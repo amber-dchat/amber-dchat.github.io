@@ -44,7 +44,7 @@ export class ClientUser extends BaseUser {
 
 		const peer = await cache.fetch(pub);
 
-		this._user.get("friends").get(peer.info.username).put("%removed%");
+		this._user.get("friends").get(peer.info.username).put(null);
 	}
 
 	onFriendsUpdate(onUpdate: OnFriendsUpdateHandler, forceMultiple = false) {
@@ -62,9 +62,13 @@ export class ClientUser extends BaseUser {
 			const map = await Promise.all(
 				Object.values(data).map((v) => {
 					if (v.startsWith('~')) v = v.replace('~', '');
+
+					this.pushFriends(v)
+
 					return cache.fetch(v);
 				}),
 			);
+			
 			onUpdate(map);
 		});
 

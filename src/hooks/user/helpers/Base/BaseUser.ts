@@ -2,12 +2,14 @@ import { IGunInstance } from 'gun';
 import type { GunUserInstance } from '../../useMainUser';
 import { Util } from '@/lib/utils/Utils/Util';
 
-export interface UserInfo {
+type UserFriends<T = true> = T extends boolean ? string[] : undefined;
+
+export interface UserInfo<T = true> {
 	username: string;
 	avatar: string;
 	displayName: string;
 	bio: string;
-	friends: string[];
+	friends: UserFriends<T>;
 }
 
 export const UserKeys = {
@@ -35,7 +37,8 @@ export class BaseUser {
 	_db: IGunInstance;
 
 	_user: GunUserInstance;
-	info?: UserInfo;
+	info?: UserInfo<true>;
+	_friends: string[] = []
 
 	constructor(db: IGunInstance, user: GunUserInstance, preventFetch = false) {
 		this._db = db;
@@ -43,15 +46,23 @@ export class BaseUser {
 
 		if (!preventFetch) {
 			(async () => {
-				this.info = await this.refetch();
+				this.info = await this.refetch(false, this._friends);
 			})();
 		}
+	}
+
+	/**
+	 * THIS METHOD IS ONLY FOR THE LISTENER AND DOES NOT ACTUALLY UPDATE THE DATABASE. DONT USE IT UNLESS YOURE RETRO
+	 */
+	pushFriends(...friend: string[]) {
+		this._friends.push(...friend)
+		this.info?.friends.push(...friend)
 	}
 
 	async fetch(): Promise<UserInfo> {
 		if (this.info) return this.info;
 		else {
-			const info = await this.refetch();
+			const info = await this.refetch(false, this._friends);
 			this._setUserInfo(info);
 			return info;
 		}
@@ -62,7 +73,7 @@ export class BaseUser {
 	}
 
 	// WARN: ONLY CALL WHEN USER CHANGES THEIR DATA
-	async refetch(updateCache = false): Promise<UserInfo> {
+	async refetch(updateCache = false, friends: string[] = []): Promise<UserInfo> {
 		const bioPro = this.createPromiseGunGetUser(
 			UserKeys.Bio,
 		) as Promise<string>;
@@ -76,23 +87,12 @@ export class BaseUser {
 		const displaynamePro = this.createPromiseGunGetUser(
 			UserKeys.DisplayName,
 		) as Promise<string>;
-		const friendsPro = this.createPromiseGunGetUser(
-			UserKeys.Friends,
-			{} as Record<string, string>,
-		) as Promise<Record<string, string>>;
 
-		console.log("Polling");
-		const [bio, avatar, displayName, rawFriends] = await Promise.all([
+		const [bio, avatar, displayName] = await Promise.all([
 			bioPro,
 			avatarPro,
 			displaynamePro,
-			friendsPro,
 		]);
-
-		console.log("Got data");
-		const friends = JSON.parse(JSON.stringify(rawFriends)) as { [key: string]: string };
-		console.log("Re", friends)
-		delete friends._
 
 		const userData: UserInfo = {
 			bio,
