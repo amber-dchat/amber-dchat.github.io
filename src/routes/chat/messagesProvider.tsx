@@ -1,5 +1,5 @@
-import { DMChannel } from '@/lib/Structs/DMChannel/DMChannel';
-import { Message } from '@/lib/Structs/Message/Message';
+import { DMChannel } from '@/lib/structs/DMChannel/DMChannel';
+import { Message } from '@/lib/structs/Message/Message';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useChats } from './chatsProvider';
 
@@ -22,8 +22,9 @@ export function Messages({ children }: { children: JSX.Element }) {
 
 	useEffect(() => {
 		if (room && data) {
+			setMessage([]);
 			(async () => {
-				console.log(`Room ${fetch}`);
+				console.log(`Room ${room}`);
 				const channel = await data.getChannel(`@${room}`, () => {
 					setMessage(data.getMessages(`@${room}`));
 				});

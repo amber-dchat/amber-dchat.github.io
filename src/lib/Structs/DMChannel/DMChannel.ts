@@ -4,7 +4,7 @@ import { formatDataStores } from '@/lib/Constants';
 import { Util } from '@/lib/utils/Utils/Util';
 import type { IGunInstance } from 'gun';
 import { Message } from '@/lib/structs/Message/Message';
-import { getPeerCache } from '../Cache/PeerCache';
+import { getPeerCache } from '../cache/PeerCache';
 
 export class DMChannel {
 	client: ClientUser;

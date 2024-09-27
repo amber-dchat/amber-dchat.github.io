@@ -2,8 +2,8 @@
 import { PeerUser } from '@/hooks/user/helpers/Base/PeerUser';
 import { ClientUser } from '@/hooks/user/helpers/User/ClientUser';
 import { db, UserContextValues } from '@/hooks/user/useMainUser';
-import { Cache } from '@/lib/Structs/Cache/Cache';
-import { getPeerCache } from '@/lib/Structs/Cache/PeerCache';
+import { Cache } from '@/lib/structs/cache/cache';
+import { getPeerCache } from '@/lib/structs/cache/PeerCache';
 import { DMChannel } from '@/lib/structs/DMChannel/DMChannel';
 import { Message } from '@/lib/structs/Message/Message';
 
@@ -56,7 +56,7 @@ export class ChatData {
 			await this.peerCache.fetch(uid, true),
 			db,
 			async (msg) => {
-				console.log("Message", msg);
+				console.log("Message", msg.author);
 				this.messages.get(uid)?.push(msg);
 				update();
 			},
