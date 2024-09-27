@@ -10,7 +10,7 @@ import { Message } from '@/lib/Structs/Message/Message';
 export class ChatData {
 	user: UserContextValues;
 	public chats: PeerUser[] = [];
-	peerCache = getPeerCache();
+	public peerCache = getPeerCache();
 
 	public channels: Cache<DMChannel> = new Cache({
 		prefix: 'ch-',

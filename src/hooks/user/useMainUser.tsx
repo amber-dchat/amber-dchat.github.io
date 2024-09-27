@@ -45,8 +45,8 @@ export const db = GUN({
 	peers: [
 		'https://gun-manhattan.herokuapp.com/gun',
 		`https://gundb-relay-mlccl.ondigitalocean.app/gun`,
-		// `https://peer.wallie.io/gun`,
-		// `https://plankton-app-6qfp3.ondigitalocean.app/gun`
+		`https://peer.wallie.io/gun`,
+		`https://plankton-app-6qfp3.ondigitalocean.app/gun`
 	], // TODO: Add our own servers instead of gun relays
 	localStorage: false, // Only use indexeddb
 });
