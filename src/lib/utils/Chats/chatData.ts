@@ -12,16 +12,12 @@ export class ChatData {
 	public chats: PeerUser[] = [];
 	public peerCache = getPeerCache();
 
-	public channels: Cache<DMChannel> = new Cache({
-		prefix: 'ch-',
-		size: Infinity,
-	});
 	public messages: Cache<Message[]> = new Cache({
 		prefix: 'msg-',
 		size: Infinity,
 	});
 
-	public currentCHannelCancel = () => { };
+	public currentChannelCancel = () => { };
 
 	constructor(user: UserContextValues, friendsUpdate: () => void) {
 		this.user = user;
@@ -46,10 +42,7 @@ export class ChatData {
 	async getChannel(uid: string, update: () => void): Promise<DMChannel> {
 		this.messages.set(uid, []);
 
-		this.currentCHannelCancel();
-		const cache = this.channels.get(uid);
-
-		if (cache) return cache;
+		this.currentChannelCancel();
 
 		const channel = new DMChannel(
 			this.user.userInfo as ClientUser,
@@ -61,7 +54,7 @@ export class ChatData {
 				update();
 			},
 		);
-		this.currentCHannelCancel = channel.listenToMessages();
+		this.currentChannelCancel = channel.listenToMessages();
 
 		channel.listenToMessages()
 
