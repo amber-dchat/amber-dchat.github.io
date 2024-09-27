@@ -25,7 +25,7 @@ export class ChatData {
 		this.user = user;
 
 		this.user.userInfo?.onFriendsUpdate((friends) => {
-			console.log("Fix", friends);
+			console.log('Fix', friends);
 			this.chats = friends;
 
 			friendsUpdate();
@@ -39,7 +39,7 @@ export class ChatData {
 	// This will likely explode once we add group DMs
 
 	// OUT OF DATE
-	refreshCache() { }
+	refreshCache() {}
 
 	async getChannel(uid: string, update: () => void): Promise<DMChannel> {
 		this.messages.set(uid, []);

@@ -24,27 +24,27 @@ export class ClientUser extends BaseUser {
 		user: GunUserInstance,
 		options?: ClientUserOptions,
 	) {
-		console.log("ClientUser made");
+		console.log('ClientUser made');
 		super(db, user, options?.preventFetch);
 		this._sea = sea;
 	}
 
 	async addFriend(pub: string) {
-		if (pub.startsWith("~")) pub = pub.replace("~", "")
-		const cache = getPeerCache()
+		if (pub.startsWith('~')) pub = pub.replace('~', '');
+		const cache = getPeerCache();
 
 		const peer = await cache.fetch(pub);
 
-		this._user.get("friends").get(peer.info.username).put(peer.pub);
+		this._user.get('friends').get(peer.info.username).put(peer.pub);
 	}
 
 	async removeFriend(pub: string) {
-		if (pub.startsWith("~")) pub = pub.replace("~", "")
-		const cache = getPeerCache()
+		if (pub.startsWith('~')) pub = pub.replace('~', '');
+		const cache = getPeerCache();
 
 		const peer = await cache.fetch(pub);
 
-		this._user.get("friends").get(peer.info.username).put(null);
+		this._user.get('friends').get(peer.info.username).put(null);
 	}
 
 	onFriendsUpdate(onUpdate: OnFriendsUpdateHandler, forceMultiple = false) {
@@ -57,18 +57,18 @@ export class ClientUser extends BaseUser {
 
 		list.on(async (d: Record<string, string> /* these are gun souls */) => {
 			const data = JSON.parse(JSON.stringify(d)) as { [key: string]: string };
-			delete data._
+			delete data._;
 
 			const map = await Promise.all(
 				Object.values(data).map((v) => {
 					if (v.startsWith('~')) v = v.replace('~', '');
 
-					this.pushFriends(v)
+					this.pushFriends(v);
 
 					return cache.fetch(v);
 				}),
 			);
-			
+
 			onUpdate(map);
 		});
 

@@ -7,9 +7,9 @@ import { Messages } from './messagesProvider';
 export default function Chat() {
 	const desktop = useMediaQuery('(min-width: 1024px)');
 
-	return <ChatsProvider>
-		<Messages>
-			{desktop ? <Desktop /> : <Mobile />}
-		</Messages>
-	</ChatsProvider>;
+	return (
+		<ChatsProvider>
+			<Messages>{desktop ? <Desktop /> : <Mobile />}</Messages>
+		</ChatsProvider>
+	);
 }

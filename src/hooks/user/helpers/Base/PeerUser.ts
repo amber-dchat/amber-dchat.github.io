@@ -23,15 +23,15 @@ export async function getRawUser(alias: string, gun: IGunInstance) {
 		gun.get(`~${alias}`).once((d) => {
 			if (isFromPub) {
 				clear();
-				if(!d) {
-					gun.get(`~${alias}`).once(data => {
-						if(!data) {
-							clear()
-							reject("no users found")
+				if (!d) {
+					gun.get(`~${alias}`).once((data) => {
+						if (!data) {
+							clear();
+							reject('no users found');
 						}
-						clear()
-						resolve(data)
-					})
+						clear();
+						resolve(data);
+					});
 				} else {
 					clear();
 					resolve(d);
@@ -73,7 +73,7 @@ export class PeerUser {
 	}
 
 	_transformPeerData(d: PeerData): UserInfo {
-		const actualFriends = d[UserKeys.Friends] || { _: "" }
+		const actualFriends = d[UserKeys.Friends] || { _: '' };
 
 		return {
 			username: d[UserKeys.Username],

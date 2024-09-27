@@ -38,7 +38,7 @@ export class BaseUser {
 
 	_user: GunUserInstance;
 	info?: UserInfo<true>;
-	_friends: string[] = []
+	_friends: string[] = [];
 
 	constructor(db: IGunInstance, user: GunUserInstance, preventFetch = false) {
 		this._db = db;
@@ -55,8 +55,8 @@ export class BaseUser {
 	 * THIS METHOD IS ONLY FOR THE LISTENER AND DOES NOT ACTUALLY UPDATE THE DATABASE. DONT USE IT UNLESS YOURE RETRO
 	 */
 	pushFriends(...friend: string[]) {
-		this._friends.push(...friend)
-		this.info?.friends.push(...friend)
+		this._friends.push(...friend);
+		this.info?.friends.push(...friend);
 	}
 
 	async fetch(): Promise<UserInfo> {
@@ -73,7 +73,10 @@ export class BaseUser {
 	}
 
 	// WARN: ONLY CALL WHEN USER CHANGES THEIR DATA
-	async refetch(updateCache = false, friends: string[] = []): Promise<UserInfo> {
+	async refetch(
+		updateCache = false,
+		friends: string[] = [],
+	): Promise<UserInfo> {
 		const bioPro = this.createPromiseGunGetUser(
 			UserKeys.Bio,
 		) as Promise<string>;
@@ -99,7 +102,7 @@ export class BaseUser {
 			avatar,
 			displayName,
 			username,
-			friends: Object.values(friends)
+			friends: Object.values(friends),
 		};
 
 		if (updateCache) this._setUserInfo(userData);

@@ -4,7 +4,7 @@ import 'gun/lib/radix';
 import 'gun/lib/radisk';
 import 'gun/lib/store';
 import 'gun/lib/rindexed';
-import "gun/lib/yson";
+import 'gun/lib/yson';
 import 'gun/sea';
 import { useState, useContext, createContext } from 'react';
 import { ClientUser } from './helpers/User/ClientUser';
