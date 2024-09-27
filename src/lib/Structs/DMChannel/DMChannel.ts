@@ -3,7 +3,7 @@ import { ClientUser } from '@/hooks/user/helpers/User/ClientUser';
 import { formatDataStores } from '@/lib/Constants';
 import { Util } from '@/lib/utils/Utils/Util';
 import type { IGunInstance } from 'gun';
-import { Message } from '../Message/Message';
+import { Message } from '@/lib/structs/Message/Message';
 import { getPeerCache } from '../Cache/PeerCache';
 
 export class DMChannel {
@@ -47,7 +47,7 @@ export class DMChannel {
 			.get(this.__createChannelQuery())
 			.map()
 			.once(async (d) => {
-				if(!d) return
+				if (!d) return
 				const decrypted = await this.client.decrypt(d.content, this.peer.epub);
 				console.log(decrypted)
 				d.content = decrypted;
