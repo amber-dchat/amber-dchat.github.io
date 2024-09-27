@@ -26,12 +26,12 @@ export class DMChannel {
 	}
 
 	async isMessageable() {
-		const cache = getPeerCache()
-		const refreshedPeer = await this.peer.refresh()
+		const cache = getPeerCache();
+		const refreshedPeer = await this.peer.refresh();
 
-		cache.set(refreshedPeer.pub, refreshedPeer)
+		cache.set(refreshedPeer.pub, refreshedPeer);
 
-		return refreshedPeer.info.friends.includes(await this.client.getPub())
+		return refreshedPeer.info.friends.includes(await this.client.getPub());
 	}
 
 	/**
@@ -54,7 +54,7 @@ export class DMChannel {
 				this.__onMessage(message);
 			});
 
-		return listener.off
+		return listener.off;
 	}
 
 	__createChannelQuery() {

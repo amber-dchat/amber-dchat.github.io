@@ -39,6 +39,8 @@ export class ClientUser extends BaseUser {
 
 	onFriendsUpdate(onUpdate: OnFriendsUpdateHandler, forceMultiple = false) {
 		if (this._isListeningForFriends && !forceMultiple) return;
+
+		this._isListeningForFriends = true;
 		const list = this._user.get('friends');
 
 		const cache = getPeerCache();
@@ -70,13 +72,16 @@ export class ClientUser extends BaseUser {
 
 	getPub() {
 		return new Promise<string>((resolve, reject) => {
-			const { clear } = Util.createGunTimeoutRejection("ClientUser pub timeout", reject)
+			const { clear } = Util.createGunTimeoutRejection(
+				'ClientUser pub timeout',
+				reject,
+			);
 
-			this._user.get("pub").once(d => {
-				clear()
-				resolve(d)
-			})
-		})
+			this._user.get('pub').once((d) => {
+				clear();
+				resolve(d);
+			});
+		});
 	}
 
 	async editUsername(name: string) {
