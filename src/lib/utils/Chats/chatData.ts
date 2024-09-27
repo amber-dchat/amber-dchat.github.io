@@ -40,9 +40,11 @@ export class ChatData {
 
 		this.messages = [];
 
+		const peer = await this.peerCache.fetch(uid, true);
+
 		const channel = new DMChannel(
 			this.user.userInfo as ClientUser,
-			await this.peerCache.fetch(uid, true),
+			peer,
 			db,
 			async (msg) => {
 				this.messages.push(msg);
