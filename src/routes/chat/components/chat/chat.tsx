@@ -132,8 +132,8 @@ export default function ChatBubbles() {
 						This chat is end-to-end encrypted
 					</div>
 
-					{msg.messages.map((msg) => (
-						<ChatEntry key={msg.content} msg={msg} />
+					{msg.messages.map((msg, i) => (
+						<ChatEntry key={i + msg.content} msg={msg} />
 					))}
 				</>
 			) : (

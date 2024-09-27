@@ -25,8 +25,8 @@ export function Messages({ children }: { children: JSX.Element }) {
 			setMessage([]);
 			(async () => {
 				console.log(`Room ${room}`);
-				const channel = await data.getChannel(`@${room}`, () => {
-					setMessage(data.getMessages(`@${room}`));
+				const channel = await data.getChannel(`@${room}`, (msg) => {
+					setMessage(msg.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime()));
 				});
 
 				setChannel(channel);

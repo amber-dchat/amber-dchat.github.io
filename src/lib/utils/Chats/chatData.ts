@@ -2,7 +2,6 @@
 import { PeerUser } from '@/hooks/user/helpers/Base/PeerUser';
 import { ClientUser } from '@/hooks/user/helpers/User/ClientUser';
 import { db, UserContextValues } from '@/hooks/user/useMainUser';
-import { Cache } from '@/lib/structs/cache/cache';
 import { getPeerCache } from '@/lib/structs/cache/PeerCache';
 import { DMChannel } from '@/lib/structs/DMChannel/DMChannel';
 import { Message } from '@/lib/structs/Message/Message';
@@ -12,10 +11,7 @@ export class ChatData {
 	public chats: PeerUser[] = [];
 	public peerCache = getPeerCache();
 
-	public messages: Cache<Message[]> = new Cache({
-		prefix: 'msg-',
-		size: Infinity,
-	});
+	public messages: Message[] = [];
 
 	public currentChannelCancel = () => { };
 
@@ -39,19 +35,18 @@ export class ChatData {
 	// OUT OF DATE
 	refreshCache() { }
 
-	async getChannel(uid: string, update: () => void): Promise<DMChannel> {
-		this.messages.set(uid, []);
-
+	async getChannel(uid: string, update: (msg: Message[]) => void): Promise<DMChannel> {
 		this.currentChannelCancel();
+
+		this.messages = [];
 
 		const channel = new DMChannel(
 			this.user.userInfo as ClientUser,
 			await this.peerCache.fetch(uid, true),
 			db,
 			async (msg) => {
-				console.log("Message", msg.author);
-				this.messages.get(uid)?.push(msg);
-				update();
+				this.messages.push(msg);
+				update(this.messages);
 			},
 		);
 		this.currentChannelCancel = channel.listenToMessages();
@@ -59,9 +54,5 @@ export class ChatData {
 		channel.listenToMessages()
 
 		return channel;
-	}
-
-	getMessages(uid: string): Message[] {
-		return this.messages.get(uid) || [];
 	}
 }
