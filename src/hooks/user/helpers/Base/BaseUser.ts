@@ -78,8 +78,8 @@ export class BaseUser {
 		) as Promise<string>;
 		const friendsPro = this.createPromiseGunGetUser(
 			UserKeys.Friends,
-			[] as string[],
-		) as Promise<string[]>;
+			{} as Record<string, string>,
+		) as Promise<Record<string, string>>;
 
 		const [bio, avatar, displayName, friends] = await Promise.all([
 			bioPro,
@@ -88,12 +88,14 @@ export class BaseUser {
 			friendsPro,
 		]);
 
+		delete friends._
+
 		const userData: UserInfo = {
 			bio,
 			avatar,
 			displayName,
 			username,
-			friends,
+			friends: Object.values(friends)
 		};
 
 		if (updateCache) this._setUserInfo(userData);

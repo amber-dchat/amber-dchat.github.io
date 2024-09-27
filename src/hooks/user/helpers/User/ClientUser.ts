@@ -28,18 +28,13 @@ export class ClientUser extends BaseUser {
 		this._sea = sea;
 	}
 
-	addFriend(pub: string) {
+	async addFriend(pub: string) {
 		if(pub.startsWith("~")) pub = pub.replace("~", "")
+		const cache = getPeerCache()
+
+		const peer = await cache.fetch(pub);
 		
-		return new Promise<void>((resolve, reject) => {
-			const { clear } = Util.createGunTimeoutRejection("Error: Add friends timeout", reject)
-			
-			this._user.get("friends").once((friends: string[]) => {
-				this._user.get("friends").put([...friends, pub])
-				clear()
-				resolve()
-			})
-		})
+		this._user.get("friends").get(peer.info.username).put(peer.pub);
 	}
 
 	onFriendsUpdate(onUpdate: OnFriendsUpdateHandler, forceMultiple = false) {
@@ -48,9 +43,11 @@ export class ClientUser extends BaseUser {
 
 		const cache = getPeerCache();
 
-		list.on(async (data: string[] /* these are gun souls */) => {
+		list.on(async (data: Record<string, string> /* these are gun souls */) => {
+			delete data._
+
 			const map = await Promise.all(
-				data.map((v) => {
+				Object.values(data).map((v) => {
 					if (v.startsWith('~')) v = v.replace('~', '');
 					return cache.fetch(v);
 				}),

@@ -7,7 +7,7 @@ export type PeerData = {
 	[UserKeys.Username]: string;
 	[UserKeys.DisplayName]: string;
 	[UserKeys.Bio]?: string;
-	[UserKeys.Friends]?: string[];
+	[UserKeys.Friends]?: Record<string, string>;
 	[UserKeys.Avatar]?: string;
 	epub: string;
 	pub: string;
@@ -61,10 +61,12 @@ export class PeerUser {
 	}
 
 	_transformPeerData(d: PeerData): UserInfo {
+		const actualFriends = d[UserKeys.Friends] || { _: "" }
+
 		return {
 			username: d[UserKeys.Username],
 			displayName: d[UserKeys.DisplayName],
-			friends: d[UserKeys.Friends] || [],
+			friends: Object.values(actualFriends) || [],
 			bio: d[UserKeys.Bio] || '',
 			avatar:
 				d[UserKeys.Avatar] ||
@@ -93,19 +95,5 @@ export class PeerUser {
 
 	toString() {
 		return JSON.stringify(this.toJSON());
-	}
-
-	static fromJSON(json: SerializePeerUser): PeerUser {
-		const data: PeerData = {
-			[UserKeys.Username]: json.info.username,
-			[UserKeys.DisplayName]: json.info.displayName,
-			[UserKeys.Friends]: json.info.friends,
-			[UserKeys.Bio]: json.info.bio,
-			[UserKeys.Avatar]: json.info.bio,
-			epub: json.epub,
-			pub: json.pub,
-		};
-
-		return new PeerUser(data);
 	}
 }
