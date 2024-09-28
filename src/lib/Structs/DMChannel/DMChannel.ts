@@ -3,7 +3,7 @@ import { ClientUser } from '@/hooks/user/helpers/User/ClientUser';
 import { formatDataStores } from '@/lib/Constants';
 import { Util } from '@/lib/utils/Utils/Util';
 import type { IGunInstance } from 'gun';
-import { Message } from '@/lib/structs/Message/Message';
+import { Message } from "../Message/Message";
 import { getPeerCache } from '../cache/PeerCache';
 
 export class DMChannel {
@@ -11,6 +11,7 @@ export class DMChannel {
 	peer: PeerUser;
 	_db: IGunInstance;
 	__onMessage: (msg: Message) => void;
+	_isListening: boolean = false;
 
 	constructor(
 		client: ClientUser,
@@ -43,20 +44,29 @@ export class DMChannel {
 	 * @returns Event end function
 	 */
 	listenToMessages() {
+		if(this._isListening) return
+
+		this._isListening = true
+
 		const listener = this._db
 			.get(this.__createChannelQuery())
 			.map()
-			.once(async (d) => {
+			.on(async (d) => {
 				if (!d) return
 				const decrypted = await this.client.decrypt(d.content, this.peer.epub);
+				if(!decrypted?.trim()) return
 
 				d.content = decrypted;
 				d.timestamp = Util.getGunKey(d);
 				const message = new Message(d);
+
 				this.__onMessage(message);
 			});
 
-		return listener.off;
+		return () => {
+			this._isListening = false;
+			listener.off()
+		};
 	}
 
 	__createChannelQuery() {
@@ -75,7 +85,7 @@ export class DMChannel {
 				'USER FETCH HAS TIMED OUT',
 				reject,
 			);
-			this.client._user.get('pub').on((d) => {
+			this.client._user.get('pub').once((d) => {
 				clear();
 				this._db.get(this.__createChannelQuery()).get(index).put({
 					content: secret,
