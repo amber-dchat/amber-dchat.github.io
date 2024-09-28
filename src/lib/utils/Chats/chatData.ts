@@ -54,10 +54,18 @@ export class ChatData {
 			peer,
 			db,
 			async (msg) => {
+				let pub: string;
 				let author: ClientUser | PeerUser = this.user.userInfo as ClientUser;
 				if (channel.peer.pub == msg.author) {
 					author = channel.peer as PeerUser;
+					pub = channel.peer.pub
+				} else {
+					pub = await (author as ClientUser).getPub()
 				}
+
+				// TODO: FIX THIS SHIT
+				if(this.messages.find((v) => msg.author === pub && msg.content === v.msg.content && v.msg.timestamp.getTime() === msg.timestamp.getTime())) return
+
 				this.messages.push({ author, msg });
 
 				update({ author, msg });
