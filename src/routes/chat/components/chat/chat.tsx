@@ -1,6 +1,6 @@
 import './chat.css';
 
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { Components } from 'react-markdown';
 import { useEffect, useRef } from 'react';
 import { Copy, Lock, Pen, Trash2 } from 'lucide-react';
 import {
@@ -13,24 +13,22 @@ import { toast } from 'sonner';
 import { useMessages } from '../../messagesProvider';
 import { ResolvedMessage } from '@/lib/utils/Chats/chatData';
 
-function ChatEntry({ msg: { msg, author } }: { msg: ResolvedMessage }) {
-	// const skeleton = useRef<HTMLDivElement>(null);
+import { Editor } from "@monaco-editor/react";
+import { calcDark } from '@/utils/theme';
+import { getFullLanguageName } from './langMap';
 
-	// useEffect(() => {
-	// 	if (skeleton.current) {
-	// 		const observer = new IntersectionObserver((ev) =>
-	// 			ev.forEach((ev) => {
-	// 				if (ev.isIntersecting) {
-	// 					observer.unobserve(skeleton.current as HTMLDivElement);
-	// 					setTimeout(() => {
-	// 						setData(true);
-	// 					}, 200);
-	// 				}
-	// 			}),
-	// 		);
-	// 		observer.observe(skeleton.current);
-	// 	}
-	// }, []);
+function ChatEntry({ msg: { msg, author } }: { msg: ResolvedMessage }) {
+	const comp: Partial<Components> = {
+		code({ lang, children }) {
+			const code = children?.toString();
+
+			if (!code?.includes("\n")) {
+				return <code>{code}</code>;
+			}
+
+			return <Editor height={"6rem"} theme={calcDark() ? "vs-dark" : "light"} language={getFullLanguageName(lang || "").toLowerCase()} value={code} options={{ readOnly: true, minimap: { enabled: false } }} />
+		}
+	};
 
 	return (
 		<ContextMenu>
@@ -56,7 +54,7 @@ function ChatEntry({ msg: { msg, author } }: { msg: ResolvedMessage }) {
 						</h1>
 
 						<div className="markdown w-full overflow-x-clip">
-							<ReactMarkdown>{msg.content}</ReactMarkdown>
+							<ReactMarkdown components={comp}>{msg.content}</ReactMarkdown>
 						</div>
 					</div>
 				</div>
