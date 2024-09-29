@@ -1,6 +1,6 @@
 import { Separator } from '@/components/ui/separator';
 import { useChats } from '../../chatsProvider';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { PeerUser } from '@/hooks/user/helpers/Base/PeerUser';
 import { ClientUser } from '@/hooks/user/helpers/User/ClientUser';
 import { useMainUser, UserContextValues } from '@/hooks/user/useMainUser';
@@ -20,16 +20,26 @@ import { Input } from '@/components/ui/input';
 import { getUser } from '@/lib/utils/Gun/Users/getUser';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
+import { FaUserLargeSlash } from 'react-icons/fa6';
+
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 function Entry({
 	user,
+	main,
 	you = false,
 }: {
 	user: PeerUser | ClientUser;
+	main: ClientUser;
 	you?: boolean;
 }) {
 	return (
-		<div className="w-full flex space-x-1">
+		<div className="w-full flex space-x-1 overflow-x-hidden">
 			<Button
 				variant="ghost"
 				className="justify-start w-full"
@@ -41,9 +51,23 @@ function Entry({
 				</span>
 			</Button>
 			{!you && (
-				<Button variant={'secondary'} className="w-10 my-auto text-white">
-					R
-				</Button>
+				<Tooltip>
+					<TooltipTrigger
+						onClick={() => {
+							if (user.info) main.removeFriend(user?.info?.pubKey);
+						}}
+						className={cn(
+							buttonVariants({
+								size: 'default',
+								variant: 'secondary',
+								className: 'w-10 h-10 p-[0.6rem]',
+							}),
+						)}
+					>
+						<FaUserLargeSlash className="h-8 w-8" />
+					</TooltipTrigger>
+					<TooltipContent>Remove from friend</TooltipContent>
+				</Tooltip>
 			)}
 		</div>
 	);
@@ -58,7 +82,7 @@ export default function Sidebar() {
 
 	return (
 		<div className="overflow-y-scroll overflow-x-hidden flex flex-col w-full h-full px-2 py-2 space-y-2">
-			<Entry user={userInfo as ClientUser} you />
+			<Entry user={userInfo as ClientUser} main={userInfo as ClientUser} you />
 			<Separator />
 
 			<Dialog open={open} onOpenChange={setOpen}>
@@ -101,7 +125,7 @@ export default function Sidebar() {
 				</DialogContent>
 			</Dialog>
 			{friends.map((friend) => (
-				<Entry key={friend.pub} user={friend} />
+				<Entry main={userInfo as ClientUser} key={friend.pub} user={friend} />
 			))}
 		</div>
 	);

@@ -3,7 +3,7 @@ import { ClientUser } from '@/hooks/user/helpers/User/ClientUser';
 import { formatDataStores } from '@/lib/Constants';
 import { Util } from '@/lib/utils/Utils/Util';
 import type { IGunInstance } from 'gun';
-import { Message } from "../Message/Message";
+import { Message } from '../Message/Message';
 import { getPeerCache } from '../cache/PeerCache';
 
 export class DMChannel {
@@ -32,7 +32,7 @@ export class DMChannel {
 
 		cache.set(refreshedPeer.pub, refreshedPeer);
 
-		return this.client.info?.friends.includes(refreshedPeer.pub)
+		return this.client.info?.friends.includes(refreshedPeer.pub);
 	}
 
 	/**
@@ -44,17 +44,17 @@ export class DMChannel {
 	 * @returns Event end function
 	 */
 	listenToMessages() {
-		if(this._isListening) return
+		if (this._isListening) return;
 
-		this._isListening = true
+		this._isListening = true;
 
 		const listener = this._db
 			.get(this.__createChannelQuery())
 			.map()
 			.on(async (d) => {
-				if (!d) return
+				if (!d) return;
 				const decrypted = await this.client.decrypt(d.content, this.peer.epub);
-				if(!decrypted?.trim()) return
+				if (!decrypted?.trim()) return;
 
 				d.content = decrypted;
 				d.timestamp = Util.getGunKey(d);
@@ -65,13 +65,13 @@ export class DMChannel {
 
 		return () => {
 			this._isListening = false;
-			listener.off()
+			listener.off();
 		};
 	}
 
 	__createChannelQuery() {
 		return formatDataStores(
-			[this.client._sea.epub, this.peer.epub].sort().join("-C-"),
+			[this.client._sea.epub, this.peer.epub].sort().join('-C-'),
 			'chat',
 		);
 	}

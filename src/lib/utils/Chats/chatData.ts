@@ -38,9 +38,12 @@ export class ChatData {
 	// This will likely explode once we add group DMs
 
 	// OUT OF DATE
-	refreshCache() { }
+	refreshCache() {}
 
-	async getChannel(uid: string, update: (msg: ResolvedMessage) => void): Promise<DMChannel> {
+	async getChannel(
+		uid: string,
+		update: (msg: ResolvedMessage) => void,
+	): Promise<DMChannel> {
 		if (this.chPub == uid) {
 			throw new Error("Don't");
 		}
@@ -58,13 +61,21 @@ export class ChatData {
 				let author: ClientUser | PeerUser = this.user.userInfo as ClientUser;
 				if (channel.peer.pub == msg.author) {
 					author = channel.peer as PeerUser;
-					pub = channel.peer.pub
+					pub = channel.peer.pub;
 				} else {
-					pub = await (author as ClientUser).getPub()
+					pub = await (author as ClientUser).getPub();
 				}
 
 				// TODO: FIX THIS SHIT
-				if(this.messages.find((v) => msg.author === pub && msg.content === v.msg.content && v.msg.timestamp.getTime() === msg.timestamp.getTime())) return
+				if (
+					this.messages.find(
+						(v) =>
+							msg.author === pub &&
+							msg.content === v.msg.content &&
+							v.msg.timestamp.getTime() === msg.timestamp.getTime(),
+					)
+				)
+					return;
 
 				this.messages.push({ author, msg });
 
@@ -72,7 +83,7 @@ export class ChatData {
 			},
 		);
 
-		channel.listenToMessages()
+		channel.listenToMessages();
 
 		this.chPub = channel.peer.pub;
 		return channel;

@@ -59,7 +59,7 @@ export class ClientUser extends BaseUser {
 			delete data._;
 
 			const map = await Promise.all(
-				Object.values(data).map((v) => {
+				Object.values(data).filter((v) => v != null).map((v) => {
 					if (v.startsWith('~')) v = v.replace('~', '');
 
 					this.pushFriends(v);
