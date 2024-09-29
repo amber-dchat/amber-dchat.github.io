@@ -3,7 +3,7 @@ import { ClientUser } from '@/hooks/user/helpers/User/ClientUser';
 import { formatDataStores } from '@/lib/Constants';
 import { Util } from '@/lib/utils/Utils/Util';
 import type { IGunInstance } from 'gun';
-import { Message } from "../Message/Message";
+import { Message, type MessageStructure } from "../Message/Message";
 import { getPeerCache } from '../cache/PeerCache';
 
 export class DMChannel {
@@ -35,6 +35,24 @@ export class DMChannel {
 		cache.set(refreshedPeer.pub, refreshedPeer);
 
 		return this.client.info?.friends.includes(refreshedPeer.pub)
+	}
+
+	private async updateMessageListener(m: MessageStructure) {
+		const message = await this.createMessage(m)
+		if(!message) return
+		this.__onMessage(message)
+	}
+
+	private async createMessage(m: MessageStructure) {
+		const decrypted = await this.client.decrypt(m.content, this.peer.epub)
+		if(!decrypted.trim()) return null
+		m.content = decrypted
+		m.timestamp = Util.getGunKey(m)
+		return new Message(m)
+	}
+
+	private createChatListener(query: string) {
+		return this._db.get(query).map().on(msg => this.updateMessageListener(msg)).off
 	}
 
 	/**
@@ -81,28 +99,20 @@ export class DMChannel {
 			.on((d: number) => {
 				const chatQuery = this.__createChannelQueryChat(d)
 				if(d === 0) {
-					this.delisten1 = this._db.get(chatQuery).map().on(msg => {
-						
-					}).off
+					this.delisten1 = this.createChatListener(chatQuery)
 					return
 				} else {
 					if(firstStart) {
 						const chatQuery2 = this.__createChannelQueryChat(d - 1)
-						this.delisten1 = this._db.get(chatQuery2).map().on(msg => {
-
-						}).off
-						this.delisten2 = this._db.get(chatQuery).map().on(msg => {
-
-						}).off
+						this.delisten1 = this.createChatListener(chatQuery2)
+						this.delisten2 = this.createChatListener(chatQuery)
 
 						firstStart = false;
 					} else {
 						if(this.delisten1) {
 							this.delisten1()
 							this.delisten1 = this.delisten2
-							this.delisten2 = this._db.get(chatQuery).map().on(msg => {
-								
-							}).off
+							this.delisten2 = this.createChatListener(chatQuery)
 						}
 					}
 				}
@@ -147,6 +157,7 @@ export class DMChannel {
 	}
 
 	async send(content: string) {
+		// TODO: REWORK
 		const index = new Date().toISOString();
 		const secret = await this.client.encrypt(content, this.peer.epub);
 
@@ -157,7 +168,7 @@ export class DMChannel {
 			);
 			this.client._user.get('pub').once((d) => {
 				clear();
-				this._db.get(this.__createChannelQuery()).get(index).put({
+				this._db.get(this.__createChannelQueryIndex()).get(index).put({
 					content: secret,
 					by: d,
 				});
