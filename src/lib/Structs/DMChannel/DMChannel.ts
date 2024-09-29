@@ -14,6 +14,7 @@ export class DMChannel {
 	_isListening: boolean = false;
 	private delisten1?: () => void;
 	private delisten2?: () => void;
+	currentIndex?: number
 
 	constructor(
 		client: ClientUser,
@@ -97,6 +98,7 @@ export class DMChannel {
 		const indexListener = this._db
 			.get(this.__createChannelQueryIndex())
 			.on((d: number) => {
+				this.currentIndex = d;
 				const chatQuery = this.__createChannelQueryChat(d)
 				if(d === 0) {
 					this.delisten1 = this.createChatListener(chatQuery)
@@ -150,30 +152,53 @@ export class DMChannel {
 	}
 
 	__createChannelQueryChat(offset: number) {
-		return formatDataStores(
-			[this.client._sea.epub, this.peer.epub].sort().join("-chatting-") + offset,
-			'chat',
-		);
+		return this.__createChannelQueryIndex() + offset
 	}
 
 	async send(content: string) {
+		if(!this.currentIndex) throw new Error("Unable to send messages as listener is not invoked")
 		// TODO: REWORK
 		const index = new Date().toISOString();
 		const secret = await this.client.encrypt(content, this.peer.epub);
+		const query = this.__createChannelQueryChat(this.currentIndex)
+
+		const amountOfMessages = await new Promise<number>((resolve, reject) => {
+			const { clear } = Util.createGunTimeoutRejection("Timeout of fetching message amount", reject)
+
+			this._db.get(query).once((current: Record<string, {}> | undefined) => {
+				clear()
+				resolve(!!current ? Object.keys(current).length : 0)
+			})
+		})
+
+		if(amountOfMessages >= 25) {
+			this.currentIndex++
+			this._db.get(this.__createChannelQueryIndex()).put(this.currentIndex)
+		}
+		
+		const clientPub = await this.client.getPub()
 
 		return new Promise((resolve, reject) => {
-			const { clear } = Util.createGunTimeoutRejection(
-				'USER FETCH HAS TIMED OUT',
-				reject,
-			);
-			this.client._user.get('pub').once((d) => {
-				clear();
-				this._db.get(this.__createChannelQueryIndex()).get(index).put({
+			const { clear } = Util.createGunTimeoutRejection("Timeout of sending messages", reject)
+
+			if(!this.currentIndex)  {
+				clear()
+				return reject("Unable to send messages as listener is not invoked")
+			}
+
+			this._db.get(this.__createChannelQueryChat(this.currentIndex)).get(index).put(
+				{
 					content: secret,
-					by: d,
-				});
-				resolve(undefined);
-			});
-		});
+					by: clientPub
+				},
+				(ack) => {
+					clear()
+					if((ack as { err: string }).err) {
+						return reject(`Unable to send messages:\n${(ack as { err: string }).err}`)
+					}
+					resolve(undefined)
+				}
+			)
+		})
 	}
 }
