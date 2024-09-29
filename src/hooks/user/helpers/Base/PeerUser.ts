@@ -83,7 +83,7 @@ export class PeerUser {
 			avatar:
 				d[UserKeys.Avatar] ||
 				`https://api.dicebear.com/7.x/notionists/svg/seed=${d[UserKeys.Username]}`,
-			pubKey: d.pub,
+			pub: d.pub,
 		};
 	}
 

@@ -54,7 +54,7 @@ function Entry({
 				<Tooltip>
 					<TooltipTrigger
 						onClick={() => {
-							if (user.info) main.removeFriend(user?.info?.pubKey);
+							if (user.info) main.removeFriend(user?.info?.pub);
 						}}
 						className={cn(
 							buttonVariants({
