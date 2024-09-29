@@ -12,6 +12,8 @@ export class DMChannel {
 	_db: IGunInstance;
 	__onMessage: (msg: Message) => void;
 	_isListening: boolean = false;
+	private delisten1?: () => void;
+	private delisten2?: () => void;
 
 	constructor(
 		client: ClientUser,
@@ -43,13 +45,71 @@ export class DMChannel {
 	 * ```
 	 * @returns Event end function
 	 */
-	listenToMessages() {
+	async listenToMessages() {
 		if(this._isListening) return
 
 		this._isListening = true
 
+		const query = this.__createChannelQueryIndex()
+
+		await new Promise<void>((resolve, reject) => {
+			const { clear } = Util.createGunTimeoutRejection("check exists channel timeout", reject)
+			this._db
+				.get(query)
+				.once((d) => {
+					if(d) {
+						clear()
+						resolve()
+					} else {
+						this._db.get(query).put(0, (ack) => {
+							if((ack as { err: string }).err) {
+								clear()
+								resolve()
+							} else {
+								clear()
+								resolve()
+							}
+						})
+					}
+				})
+		})
+
+		let firstStart = true
+
+		const indexListener = this._db
+			.get(this.__createChannelQueryIndex())
+			.on((d: number) => {
+				const chatQuery = this.__createChannelQueryChat(d)
+				if(d === 0) {
+					this.delisten1 = this._db.get(chatQuery).map().on(msg => {
+						
+					}).off
+					return
+				} else {
+					if(firstStart) {
+						const chatQuery2 = this.__createChannelQueryChat(d - 1)
+						this.delisten1 = this._db.get(chatQuery2).map().on(msg => {
+
+						}).off
+						this.delisten2 = this._db.get(chatQuery).map().on(msg => {
+
+						}).off
+
+						firstStart = false;
+					} else {
+						if(this.delisten1) {
+							this.delisten1()
+							this.delisten1 = this.delisten2
+							this.delisten2 = this._db.get(chatQuery).map().on(msg => {
+								
+							}).off
+						}
+					}
+				}
+			})
+
 		const listener = this._db
-			.get(this.__createChannelQuery())
+			.get(this.__createChannelQueryIndex())
 			.map()
 			.on(async (d) => {
 				if (!d) return
@@ -65,13 +125,23 @@ export class DMChannel {
 
 		return () => {
 			this._isListening = false;
+			if(this.delisten1) this.delisten1()
+			if(this.delisten2) this.delisten2()
+			indexListener.off()
 			listener.off()
 		};
 	}
 
-	__createChannelQuery() {
+	__createChannelQueryIndex() {
 		return formatDataStores(
-			[this.client._sea.epub, this.peer.epub].sort().join("-C-"),
+			[this.client._sea.epub, this.peer.epub].sort().join("-connecting-"),
+			'chat',
+		);
+	}
+
+	__createChannelQueryChat(offset: number) {
+		return formatDataStores(
+			[this.client._sea.epub, this.peer.epub].sort().join("-chatting-") + offset,
 			'chat',
 		);
 	}
