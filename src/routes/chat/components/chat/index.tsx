@@ -33,7 +33,7 @@ export default function Chat() {
 						const txt = textarea.current;
 
 						const val = txt.value as string;
-						txt.value = "";
+						txt.value = '';
 
 						if (msg) {
 							msg.channel?.send(val);
