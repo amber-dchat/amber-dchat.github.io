@@ -43,7 +43,7 @@ function Entry({
 			<Button
 				variant="ghost"
 				className="justify-start w-full"
-				onClick={() => navigate(`/?room=${user.info?.username}`, true)}
+				onClick={() => navigate(`/?room=${user.info?.username}`)}
 			>
 				<img src={user.info?.avatar} className="w-6 h-6 mr-2 rounded-full" />
 				<span>

@@ -20,6 +20,7 @@ export class ChatData {
 
 	// Stores Channel
 	public chPub: string | undefined;
+	public clean: (() => void) | undefined = undefined;
 
 	constructor(user: UserContextValues, friendsUpdate: () => void) {
 		this.user = user;
@@ -38,7 +39,7 @@ export class ChatData {
 	// This will likely explode once we add group DMs
 
 	// OUT OF DATE
-	refreshCache() {}
+	refreshCache() { }
 
 	async getChannel(
 		uid: string,
@@ -48,6 +49,7 @@ export class ChatData {
 			throw new Error("Don't");
 		}
 
+		this.clean?.();
 		this.messages = [];
 
 		const peer = await this.peerCache.fetch(uid, true);
@@ -79,11 +81,12 @@ export class ChatData {
 
 				this.messages.push({ author, msg });
 
+				console.log(msg);
 				update({ author, msg });
 			},
 		);
 
-		channel.listenToMessages();
+		this.clean = channel.listenToMessages() as () => void;
 
 		this.chPub = channel.peer.pub;
 		return channel;
