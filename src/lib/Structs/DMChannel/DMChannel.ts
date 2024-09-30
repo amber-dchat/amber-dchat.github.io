@@ -52,13 +52,17 @@ export class DMChannel {
 			.get(this.__createChannelQuery())
 			.map()
 			.on(async (d) => {
-				if (!d) return;
-				const decrypted = await this.client.decrypt(d.content, this.peer.epub);
+				const msg = structuredClone(d);
+
+				if (!msg || !msg?.content) return;
+				// const decrypted = d.content.startsWith("SEA") ? await this.client.decrypt(d.content, this.peer.epub) : d.content;
+				const decrypted = await this.client.decrypt(msg.content, this.peer.epub)
 				if (!decrypted?.trim()) return;
 
-				d.content = decrypted;
-				d.timestamp = Util.getGunKey(d);
-				const message = new Message(d);
+				msg.content = decrypted;
+				msg.timestamp = Util.getGunKey(d);
+
+				const message = new Message(msg);
 
 				this.__onMessage(message);
 			});

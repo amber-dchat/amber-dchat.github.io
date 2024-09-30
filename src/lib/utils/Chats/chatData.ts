@@ -80,8 +80,6 @@ export class ChatData {
 					return;
 
 				this.messages.push({ author, msg });
-
-				console.log(msg);
 				update({ author, msg });
 			},
 		);
