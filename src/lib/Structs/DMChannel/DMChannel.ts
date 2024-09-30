@@ -99,22 +99,34 @@ export class DMChannel {
 
 		let firstStart = true;
 
+		// This is horrible code so I'm gonna try to explain it
+		// P.S. if you decide to maintain it, add hours wasted to warn the next guy
+		// Hours wasted: 8
+
+		// Listen to indexing events
 		const indexListener = this._db
 			.get(this.__createChannelQueryIndex())
 			.on((d: number) => {
+				if(!d) return;
+				// Set the current index to the database's index
 				this.currentIndex = d;
 				const chatQuery = this.__createChannelQueryChat(d);
 				if (d === 0) {
+					// d is 0 if its a new chat
+					// 0 only needs 1 listener since there aren't more messages above
 					this.delisten1 = this.createChatListener(chatQuery);
 					return;
 				} else {
 					if (firstStart) {
 						const chatQuery2 = this.__createChannelQueryChat(d - 1);
-						this.delisten1 = this.createChatListener(chatQuery2);
+						// if the messages are querying for the first time, get 2 events
+						if(this.delisten1) this.delisten1();
+						else this.delisten1 = this.createChatListener(chatQuery2);
 						this.delisten2 = this.createChatListener(chatQuery);
 
 						firstStart = false;
 					} else {
+						// if not, swap the places of delisten1 and delisten2. dlisten2 is actually the newer one
 						if (this.delisten1) {
 							this.delisten1();
 							this.delisten1 = this.delisten2;
