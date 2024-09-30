@@ -39,7 +39,7 @@ export class DMChannel {
 	}
 
 	private async updateMessageListener(m: MessageStructure) {
-		const message = await this.createMessage(m);
+		const message = await this.createMessage(structuredClone(m));
 		if (!message) return;
 		this.__onMessage(message);
 	}
