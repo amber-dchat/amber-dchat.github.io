@@ -109,14 +109,15 @@ export class DMChannel {
 
 		// This is horrible code so I'm gonna try to explain it
 		// P.S. if you decide to maintain it, add hours wasted to warn the next guy
-		// Hours wasted: 8
+		// Hours wasted: 15
 
 		// Listen to indexing events
 		const indexListener = this._db
 			.get(this.__createChannelQueryIndex())
 			.get("index")
 			.on((d: number) => {
-				if(tempIndex === d) {
+				// gun likes to fire twice for some reason
+				if(tempIndex === d && !firstStart) {
 					tempIndex = 0
 					return
 				}
@@ -135,7 +136,7 @@ export class DMChannel {
 						firstStart = false;
 						const chatQuery2 = this.__createChannelQueryChat(d - 1);
 						// if the messages are querying for the first time, get 2 events
-						if(this.delisten1) {
+						if(typeof this.delisten1 === 'function') {
 							this.delisten1();
 						} else {
 							this.delisten1 = this.createChatListener(chatQuery2);
