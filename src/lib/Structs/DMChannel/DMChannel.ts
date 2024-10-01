@@ -53,10 +53,16 @@ export class DMChannel {
 	}
 
 	private createChatListener(query: string) {
-		return this._db
+		const off = this._db
 			.get(query)
 			.map()
-			.on((msg) => this.updateMessageListener(msg)).off;
+			.on((msg) => {
+				this.updateMessageListener(msg)
+			});
+
+		return () => {
+			off.off()
+		}
 	}
 
 	/**
@@ -84,7 +90,7 @@ export class DMChannel {
 					clear();
 					resolve();
 				} else {
-					this._db.get(query).put(0, (ack) => {
+					this._db.get(query).put({ index: 0 }, (ack) => {
 						if ((ack as { err: string }).err) {
 							clear();
 							resolve();
@@ -99,6 +105,8 @@ export class DMChannel {
 
 		let firstStart = true;
 
+		let tempIndex = 0
+
 		// This is horrible code so I'm gonna try to explain it
 		// P.S. if you decide to maintain it, add hours wasted to warn the next guy
 		// Hours wasted: 8
@@ -106,8 +114,14 @@ export class DMChannel {
 		// Listen to indexing events
 		const indexListener = this._db
 			.get(this.__createChannelQueryIndex())
+			.get("index")
 			.on((d: number) => {
-				if(!d) return;
+				if(tempIndex === d) {
+					tempIndex = 0
+					return
+				}
+				if(d == undefined && d !== 0) return;
+				tempIndex = d
 				// Set the current index to the database's index
 				this.currentIndex = d;
 				const chatQuery = this.__createChannelQueryChat(d);
@@ -118,20 +132,23 @@ export class DMChannel {
 					return;
 				} else {
 					if (firstStart) {
+						firstStart = false;
 						const chatQuery2 = this.__createChannelQueryChat(d - 1);
 						// if the messages are querying for the first time, get 2 events
-						if(this.delisten1) this.delisten1();
-						else this.delisten1 = this.createChatListener(chatQuery2);
+						if(this.delisten1) {
+							this.delisten1();
+						} else {
+							this.delisten1 = this.createChatListener(chatQuery2);
+						}
 						this.delisten2 = this.createChatListener(chatQuery);
-
-						firstStart = false;
 					} else {
+						console.log(this.delisten1)
 						// if not, swap the places of delisten1 and delisten2. dlisten2 is actually the newer one
 						if (this.delisten1) {
 							this.delisten1();
-							this.delisten1 = this.delisten2;
-							this.delisten2 = this.createChatListener(chatQuery);
 						}
+						this.delisten1 = this.delisten2;
+						this.delisten2 = this.createChatListener(chatQuery);
 					}
 				}
 			});
@@ -156,7 +173,7 @@ export class DMChannel {
 	}
 
 	async send(content: string) {
-		if (!this.currentIndex)
+		if (this.currentIndex == undefined && this.currentIndex !== 0)
 			throw new Error('Unable to send messages as listener is not invoked');
 		// TODO: REWORK
 		const index = new Date().toISOString();
@@ -175,9 +192,9 @@ export class DMChannel {
 			});
 		});
 
-		if (amountOfMessages >= 25) {
+		if (amountOfMessages >= 15) {
 			this.currentIndex++;
-			this._db.get(this.__createChannelQueryIndex()).put(this.currentIndex);
+			this._db.get(this.__createChannelQueryIndex()).get("index").put(this.currentIndex);
 		}
 
 		const clientPub = await this.client.getPub();
@@ -188,10 +205,12 @@ export class DMChannel {
 				reject,
 			);
 
-			if (!this.currentIndex) {
+			if (this.currentIndex == undefined && this.currentIndex !== 0) {
 				clear();
 				return reject('Unable to send messages as listener is not invoked');
 			}
+
+			console.log(this.currentIndex)
 
 			this._db
 				.get(this.__createChannelQueryChat(this.currentIndex))
