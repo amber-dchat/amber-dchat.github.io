@@ -20,6 +20,7 @@ export class ChatData {
 
 	// Stores Channel
 	public chPub: string | undefined;
+	public clean: (() => void) | undefined = undefined;
 
 	constructor(user: UserContextValues, friendsUpdate: () => void) {
 		this.user = user;
@@ -48,6 +49,7 @@ export class ChatData {
 			throw new Error("Don't");
 		}
 
+		this.clean?.();
 		this.messages = [];
 
 		const peer = await this.peerCache.fetch(uid, true);
@@ -78,12 +80,11 @@ export class ChatData {
 					return;
 
 				this.messages.push({ author, msg });
-
 				update({ author, msg });
 			},
 		);
 
-		channel.listenToMessages();
+		this.clean = channel.listenToMessages() as () => void;
 
 		this.chPub = channel.peer.pub;
 		return channel;

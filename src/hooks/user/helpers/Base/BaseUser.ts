@@ -10,6 +10,7 @@ export interface UserInfo<T = true> {
 	displayName: string;
 	bio: string;
 	friends: UserFriends<T>;
+	pub: string;
 }
 
 export const UserKeys = {
@@ -18,6 +19,7 @@ export const UserKeys = {
 	DisplayName: 'display_name',
 	Avatar: 'avatar',
 	Friends: 'friends',
+	Pub: 'pub',
 } as const;
 
 export const profileDefault =
@@ -29,6 +31,7 @@ export interface ValidUserInfo {
 	[UserKeys.DisplayName]: string;
 	[UserKeys.Username]: string;
 	[UserKeys.Friends]: string;
+	[UserKeys.Pub]: string;
 }
 
 export type UserKeys = (typeof UserKeys)[keyof typeof UserKeys];
@@ -103,6 +106,7 @@ export class BaseUser {
 			displayName,
 			username,
 			friends: Object.values(friends),
+			pub: this._user.is?.pub as string,
 		};
 
 		if (updateCache) this._setUserInfo(userData);

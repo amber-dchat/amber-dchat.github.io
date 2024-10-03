@@ -4,12 +4,16 @@ import Mobile from './mobile';
 import { ChatsProvider } from './chatsProvider';
 import { Messages } from './messagesProvider';
 
+import { TooltipProvider } from '@/components/ui/tooltip';
+
 export default function Chat() {
 	const desktop = useMediaQuery('(min-width: 1024px)');
 
 	return (
 		<ChatsProvider>
-			<Messages>{desktop ? <Desktop /> : <Mobile />}</Messages>
+			<Messages>
+				<TooltipProvider>{desktop ? <Desktop /> : <Mobile />}</TooltipProvider>
+			</Messages>
 		</ChatsProvider>
 	);
 }

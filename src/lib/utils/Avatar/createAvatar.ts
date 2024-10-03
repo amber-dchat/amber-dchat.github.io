@@ -1,10 +1,9 @@
-import { $ } from '@/utils/syntax';
 import Resizer from 'react-image-file-resizer';
 
 const VALID_IMAGE_MIME_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 
 export function promptForAvatar(): Promise<File> {
-	const input = $<HTMLInputElement>('#avatar');
+	const input = document.querySelector<HTMLInputElement>('#avatar');
 
 	return new Promise((res, err) => {
 		if (input) {
@@ -17,9 +16,9 @@ export function promptForAvatar(): Promise<File> {
 			});
 
 			input.click();
+		} else {
+			err('');
 		}
-
-		err('');
 	});
 }
 

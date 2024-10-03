@@ -34,7 +34,7 @@ export class ClientUser extends BaseUser {
 
 		const peer = await cache.fetch(pub);
 
-		this._user.get('friends').get(peer.info.username).put(peer.pub);
+		this._user.get('friends').get(peer.pub).put(peer.pub);
 	}
 
 	async removeFriend(pub: string) {
@@ -43,7 +43,7 @@ export class ClientUser extends BaseUser {
 
 		const peer = await cache.fetch(pub);
 
-		this._user.get('friends').get(peer.info.username).put(null);
+		this._user.get('friends').get(peer.pub).put(null);
 	}
 
 	onFriendsUpdate(onUpdate: OnFriendsUpdateHandler, forceMultiple = false) {
@@ -59,7 +59,7 @@ export class ClientUser extends BaseUser {
 			delete data._;
 
 			const map = await Promise.all(
-				Object.values(data).map((v) => {
+				Object.values(data).filter((v) => v != null).map((v) => {
 					if (v.startsWith('~')) v = v.replace('~', '');
 
 					this.pushFriends(v);
@@ -96,10 +96,6 @@ export class ClientUser extends BaseUser {
 				resolve(d);
 			});
 		});
-	}
-
-	async editUsername(name: string) {
-		await this.createPromiseGunPutUser(UserKeys.Username, name);
 	}
 
 	async editDisplayName(name: string) {

@@ -111,7 +111,6 @@ export class DMChannel {
 		if (this._isListening) return;
 
 		this._isListening = true;
-
 		const query = this.__createChannelQueryIndex();
 
 		await new Promise<void>((resolve, reject) => {

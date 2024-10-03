@@ -30,10 +30,13 @@ import { useEffect, useState } from 'react';
 import { getTheme, setTheme } from '@/utils/theme';
 import { Login } from './login';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { EditProfile } from './profile';
 
 export default function NavigationBar() {
 	const [theme, changeTheme] = useState(getTheme());
 	const [open, setOpen] = useState(false);
+
+	const [openEditProfile, setOpenEditProfile] = useState(false);
 
 	useEffect(() => setTheme(theme), [theme]);
 
@@ -102,17 +105,26 @@ export default function NavigationBar() {
 			>
 				{logged ? <></> : <HiOutlineRocketLaunch />}
 				{logged ? (
-					<ProfileDropdown user={user} />
+					<ProfileDropdown setOpen={setOpenEditProfile} user={user} />
 				) : (
 					<span className="ml-1">Get Started</span>
 				)}
 			</NavigationMenuLink>
 			<Login {...{ open, setOpen }} />
+			<EditProfile
+				{...{ open: openEditProfile, setOpen: setOpenEditProfile }}
+			/>
 		</NavigationMenu>
 	);
 }
 
-function ProfileDropdown({ user }: { user: UserContextValues | null }) {
+function ProfileDropdown({
+	user,
+	setOpen,
+}: {
+	user: UserContextValues | null;
+	setOpen: (v: boolean) => void;
+}) {
 	const alias = user?.userInfo?.info?.username;
 	const avatar = user?.userInfo?.info?.avatar;
 	const displayName = user?.userInfo?.info?.displayName;
@@ -134,7 +146,7 @@ function ProfileDropdown({ user }: { user: UserContextValues | null }) {
 				<DropdownMenuSeparator />
 
 				<DropdownMenuGroup>
-					<DropdownMenuItem>
+					<DropdownMenuItem onClick={() => setOpen(true)}>
 						<Settings className="mr-2 h-4 w-4" />
 						<span>Edit Profile</span>
 					</DropdownMenuItem>

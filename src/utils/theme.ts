@@ -12,9 +12,7 @@ setInterval(() => {
 
 export function loadTheme() {
 	try {
-		const dark = JSON.parse(
-			localStorage.dark || (defaultDark ? 'true' : 'false'),
-		) as boolean;
+		const dark = calcDark();
 
 		loadThemeInner(dark);
 	} catch (e) {
@@ -22,6 +20,10 @@ export function loadTheme() {
 		loadThemeInner(defaultDark);
 	}
 }
+
+export const calcDark = () => JSON.parse(
+	localStorage.dark || (defaultDark ? 'true' : 'false'),
+) as boolean;
 
 export const getTheme = () => {
 	try {
