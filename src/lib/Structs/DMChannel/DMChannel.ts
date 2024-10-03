@@ -39,15 +39,14 @@ export class DMChannel {
 	}
 
 	public fetchMessages(offset: number) {
-		const previousIndex = ((this.currentIndex ?? 0) - 2) - offset;
-		if(previousIndex < 0) throw new Error("Cannot fetch messages less than chat index 0");
-		
+		const previousIndex = (this.currentIndex ?? 0) - 2 - offset;
+		if (previousIndex < 0)
+			throw new Error('Cannot fetch messages less than chat index 0');
+
 		const query = this.__createChannelQueryChat(previousIndex);
 
 		return new Promise<Message[]>((resolve) => {
-			this._db
-			.get(query)
-			.once(async (nodes) => {
+			this._db.get(query).once(async (nodes) => {
 				const indieNode = structuredClone(nodes);
 				delete indieNode._;
 				const allNodes = Object.keys(structuredClone(nodes));
@@ -55,19 +54,22 @@ export class DMChannel {
 				Promise.all(
 					allNodes.map((id) => {
 						return new Promise<Message | undefined>((re) => {
-							this._db.get(query).get(id).once(async (rawM) => {
-								const msg = structuredClone(rawM);
-								const translatedMsg = await this.createMessage(msg);
-								if(!translatedMsg) return re(undefined);
-								re(translatedMsg);
-							})
-						})
-					})
+							this._db
+								.get(query)
+								.get(id)
+								.once(async (rawM) => {
+									const msg = structuredClone(rawM);
+									const translatedMsg = await this.createMessage(msg);
+									if (!translatedMsg) return re(undefined);
+									re(translatedMsg);
+								});
+						});
+					}),
 				).then((messages) => {
-					resolve(messages.filter(v => !!v));
-				})
-			})
-		})
+					resolve(messages.filter((v) => !!v));
+				});
+			});
+		});
 	}
 
 	private async updateMessageListener(m: MessageStructure) {
@@ -89,12 +91,12 @@ export class DMChannel {
 			.get(query)
 			.map()
 			.on((msg) => {
-				this.updateMessageListener(msg)
+				this.updateMessageListener(msg);
 			});
 
 		return () => {
-			off.off()
-		}
+			off.off();
+		};
 	}
 
 	/**
@@ -137,7 +139,7 @@ export class DMChannel {
 
 		let firstStart = true;
 
-		let tempIndex = 0
+		let tempIndex = 0;
 
 		// This is horrible code so I'm gonna try to explain it
 		// P.S. if you decide to maintain it, add hours wasted to warn the next guy
@@ -146,15 +148,15 @@ export class DMChannel {
 		// Listen to indexing events
 		const indexListener = this._db
 			.get(this.__createChannelQueryIndex())
-			.get("index")
+			.get('index')
 			.on((d: number) => {
 				// gun likes to fire twice for some reason
-				if(tempIndex === d && !firstStart) {
-					tempIndex = 0
-					return
+				if (tempIndex === d && !firstStart) {
+					tempIndex = 0;
+					return;
 				}
-				if(d == undefined && d !== 0) return;
-				tempIndex = d
+				if (d == undefined && d !== 0) return;
+				tempIndex = d;
 				// Set the current index to the database's index
 				this.currentIndex = d;
 				const chatQuery = this.__createChannelQueryChat(d);
@@ -168,14 +170,14 @@ export class DMChannel {
 						firstStart = false;
 						const chatQuery2 = this.__createChannelQueryChat(d - 1);
 						// if the messages are querying for the first time, get 2 events
-						if(typeof this.delisten1 === 'function') {
+						if (typeof this.delisten1 === 'function') {
 							this.delisten1();
 						} else {
 							this.delisten1 = this.createChatListener(chatQuery2);
 						}
 						this.delisten2 = this.createChatListener(chatQuery);
 					} else {
-						console.log(this.delisten1)
+						console.log(this.delisten1);
 						// if not, swap the places of delisten1 and delisten2. dlisten2 is actually the newer one
 						if (this.delisten1) {
 							this.delisten1();
@@ -208,7 +210,7 @@ export class DMChannel {
 	async send(content: string) {
 		if (this.currentIndex == undefined && this.currentIndex !== 0)
 			throw new Error('Unable to send messages as listener is not invoked');
-		// TODO: REWORK
+
 		const index = new Date().toISOString();
 		const secret = await this.client.encrypt(content, this.peer.epub);
 		const query = this.__createChannelQueryChat(this.currentIndex);
@@ -219,15 +221,20 @@ export class DMChannel {
 				reject,
 			);
 
-			this._db.get(query).once((current: Record<string, {}> | undefined) => {
-				clear();
-				resolve(!!current ? Object.keys(current).length : 0);
-			});
+			this._db
+				.get(query)
+				.once((current: Record<string, object> | undefined) => {
+					clear();
+					resolve(current ? Object.keys(current).length : 0);
+				});
 		});
 
 		if (amountOfMessages >= 15) {
 			this.currentIndex++;
-			this._db.get(this.__createChannelQueryIndex()).get("index").put(this.currentIndex);
+			this._db
+				.get(this.__createChannelQueryIndex())
+				.get('index')
+				.put(this.currentIndex);
 		}
 
 		const clientPub = await this.client.getPub();
@@ -243,7 +250,7 @@ export class DMChannel {
 				return reject('Unable to send messages as listener is not invoked');
 			}
 
-			console.log(this.currentIndex)
+			console.log(this.currentIndex);
 
 			this._db
 				.get(this.__createChannelQueryChat(this.currentIndex))
