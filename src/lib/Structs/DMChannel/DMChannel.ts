@@ -38,6 +38,38 @@ export class DMChannel {
 		return this.client.info?.friends.includes(refreshedPeer.pub);
 	}
 
+	public fetchMessages(offset: number) {
+		const previousIndex = ((this.currentIndex ?? 0) - 2) - offset;
+		if(previousIndex < 0) throw new Error("Cannot fetch messages less than chat index 0");
+		
+		const query = this.__createChannelQueryChat(previousIndex);
+
+		return new Promise<Message[]>((resolve) => {
+			this._db
+			.get(query)
+			.once(async (nodes) => {
+				const indieNode = structuredClone(nodes);
+				delete indieNode._;
+				const allNodes = Object.keys(structuredClone(nodes));
+
+				Promise.all(
+					allNodes.map((id) => {
+						return new Promise<Message | undefined>((re) => {
+							this._db.get(query).get(id).once(async (rawM) => {
+								const msg = structuredClone(rawM);
+								const translatedMsg = await this.createMessage(msg);
+								if(!translatedMsg) return re(undefined);
+								re(translatedMsg);
+							})
+						})
+					})
+				).then((messages) => {
+					resolve(messages.filter(v => !!v));
+				})
+			})
+		})
+	}
+
 	private async updateMessageListener(m: MessageStructure) {
 		const message = await this.createMessage(structuredClone(m));
 		if (!message) return;
