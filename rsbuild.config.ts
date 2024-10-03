@@ -16,7 +16,7 @@ export default defineConfig({
 		progressBar: true,
 	},
 	html: {
-		title: 'DChatt',
+		title: 'Amber',
 		favicon: './public/favicon.png',
 	},
 	source: {

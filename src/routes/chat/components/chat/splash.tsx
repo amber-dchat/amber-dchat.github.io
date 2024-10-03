@@ -9,9 +9,9 @@ export default function Splash() {
 				src="/favicon.png"
 				className="w-32 h-32 rounded-full grayscale mt-auto"
 			/>
-			<h1 className="text-2xl font-bold">Welcome to DChatt</h1>
+			<h1 className="text-2xl font-bold">Welcome to Amber</h1>
 			<p className="text-sm">
-				DChatt is a decentralized chat application built on top of the gun
+				Amber is a decentralized chat application built on top of the gun
 				database.
 			</p>
 
@@ -22,7 +22,7 @@ export default function Splash() {
 					variant={'secondary'}
 					onClick={() =>
 						window.open(
-							'https://github.com/dchat-app/dchat-app.github.io',
+							'https://github.com/amber-dchat/amber-dchat.github.io',
 							'_blank',
 						)
 					}
@@ -33,7 +33,7 @@ export default function Splash() {
 
 				<Button
 					variant={'secondary'}
-					onClick={() => window.open('https://github.com/dchat-app', '_blank')}
+					onClick={() => window.open('https://github.com/amber-dchat', '_blank')}
 				>
 					<BsGithub className="mr-1" />
 					GitHub Org

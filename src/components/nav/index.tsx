@@ -56,7 +56,7 @@ export default function NavigationBar() {
 					className: 'cursor-pointer mr-auto',
 				})}
 			>
-				DChatt
+				Amber
 			</NavigationMenuLink>
 
 			<DropdownMenu>
