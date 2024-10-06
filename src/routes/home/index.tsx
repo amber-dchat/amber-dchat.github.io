@@ -1,3 +1,12 @@
+import { isTauri } from "../chat/isTauri";
+import TauriLogin from "./tauriLogin";
+
 export default function Home() {
-	return <div>Home</div>;
+	if (isTauri) {
+		return <TauriLogin />
+	}
+
+	return <div>
+		Home
+	</div>;
 }

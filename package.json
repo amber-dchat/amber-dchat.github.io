@@ -44,6 +44,7 @@
 		"@rsbuild/core": "^1.0.1",
 		"@rsbuild/plugin-babel": "^1.0.1",
 		"@rsbuild/plugin-react": "^1.0.1",
+		"@tauri-apps/api": "^1.6.0",
 		"@types/gun": "^0.9.6",
 		"@types/react": "npm:types-react@rc",
 		"@types/react-dom": "npm:types-react-dom@rc",

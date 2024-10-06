@@ -1,6 +1,7 @@
 import NavigationBar from '@/components/nav';
 
 import { cn } from '@/lib/utils';
+import { isTauri } from '@/routes/chat/isTauri';
 
 export const LoadingSpinner = ({ className }: { className?: string }) => (
 	<svg
@@ -22,10 +23,14 @@ export const LoadingSpinner = ({ className }: { className?: string }) => (
 export function Loading() {
 	return (
 		<div className="w-full">
-			<NavigationBar />
+			{isTauri ? <></> : <NavigationBar />}
 
-			<div className="h-[calc(100vh-6rem)] flex items-center text-center justify-center">
-				<LoadingSpinner className="w-[15vh] h-[15vh]" />
+			<div className={`${isTauri ? "h-screen" : "h-[calc(100vh-6rem)]"} flex items-center text-center justify-center`}>
+				{isTauri ?
+					<img src="/favicon.png" className='rounded-full w-32 h-32' />
+					:
+					<LoadingSpinner className="w-[15vh] h-[15vh]" />
+				}
 			</div>
 		</div>
 	);
