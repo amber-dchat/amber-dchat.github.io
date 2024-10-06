@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { Loading } from './loading';
 import NotFound from './404';
 
@@ -25,6 +25,7 @@ const imports: { [key: string]: () => Promise<React.JSX.Element> } = {
 const delay = (ms: number) => new Promise((r) => setTimeout(() => r(null), ms));
 
 const callbacks: ((data: { pathname: string; query: string }) => void)[] = [];
+
 
 export function usePage() {
 	const [page, setPage] = useState(<Loading />);
@@ -64,7 +65,9 @@ export function usePage() {
 		})();
 	}, [pathname, cache]);
 
-	return page;
+	return <TooltipProvider>
+		{page}
+	</TooltipProvider>;
 }
 
 export interface PageData {

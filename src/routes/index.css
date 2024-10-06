@@ -1,0 +1,3 @@
+.login_width {
+  @apply w-[90vw] max-w-[25rem] max-h-[25rem];
+}
