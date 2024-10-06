@@ -99,7 +99,7 @@ export function ProfileForm({ className, val }: { className: string; val: string
 				}
 			});
 		},
-		[val, user.account],
+		[val, user.account, remember],
 	);
 
 	return (

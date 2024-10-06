@@ -15,8 +15,8 @@ export default function Desktop() {
 			<ResizablePanelGroup direction="horizontal" className="w-full h-full">
 				<ResizablePanel
 					className="h-full"
-					minSize={15}
-					defaultSize={15}
+					minSize={20}
+					defaultSize={20}
 					maxSize={25}
 				>
 					<Sidebar />
