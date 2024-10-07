@@ -30,6 +30,7 @@ export type RPCRaw = {
     hasStamps: boolean;
     stampStart?: number;
     stampEnd?: number;
+    type: RPCType;
 }
 
 export type RPC = {
@@ -47,6 +48,7 @@ export type RPC = {
         start: Date;
         end?: Date;
     }
+    type: RPCType;
 }
 
 // PLEASE: Clean before exit app
