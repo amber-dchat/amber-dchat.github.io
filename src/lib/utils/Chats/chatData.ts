@@ -84,7 +84,7 @@ export class ChatData {
 			},
 		);
 
-		this.clean = channel.listenToMessages() as () => void;
+		this.clean = await channel.listenToMessages() as () => void;
 
 		this.chPub = channel.peer.pub;
 		return channel;
