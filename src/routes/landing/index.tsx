@@ -4,6 +4,7 @@ import Home from '../home';
 
 import NavigationBar from '@/components/nav';
 import { Separator } from '@/components/ui/separator';
+import { isTauri } from '../chat/isTauri';
 
 export default function App() {
 	const user = useMainUser();
@@ -12,11 +13,14 @@ export default function App() {
 
 	return (
 		<div className="w-full h-full">
-			<NavigationBar />
+			{isTauri ? <></> :
+				<>
+					<NavigationBar />
+					<Separator />
+				</>
+			}
 
-			<Separator />
-
-			<div className="h-[calc(100vh-5.06rem)]">
+			<div className={isTauri ? "h-screen" : "h-[calc(100vh-5.06rem)]"}>
 				{loggedIn ? <Chat /> : <Home />}
 			</div>
 		</div>

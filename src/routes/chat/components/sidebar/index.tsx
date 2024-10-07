@@ -28,6 +28,9 @@ import {
 	TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
+import { isTauri } from '../../isTauri';
+import Settings from './settings';
+import { HomeIcon } from 'lucide-react';
 
 function Entry({
 	user,
@@ -81,52 +84,74 @@ export default function Sidebar() {
 	const [open, setOpen] = useState(false);
 
 	return (
-		<div className="overflow-y-scroll overflow-x-hidden flex flex-col w-full h-full px-2 py-2 space-y-2">
-			<Entry user={userInfo as ClientUser} main={userInfo as ClientUser} you />
-			<Separator />
-
-			<Dialog open={open} onOpenChange={setOpen}>
-				<DialogTrigger className="w-full flex justify-start border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 rounded-md">
-					<RiUserAddLine className="h-5 w-5 mr-2" />
-					Add Friend
-				</DialogTrigger>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Add a friend</DialogTitle>
-						<DialogDescription>Add a friend to chat</DialogDescription>
-					</DialogHeader>
-
-					<form
-						onSubmit={(e) => {
-							e.preventDefault();
-							(async () => {
-								const val = input.current?.value as string;
-
-								//if (input.current) input.current.value = '';
-								const user = await getUser(`@${val}`).then((d) => d.pub);
-
-								data.user.userInfo
-									?.addFriend(user)
-									.then(() => {
-										setOpen(false);
-									})
-									.catch(() => {
-										toast('Failed to add friend');
-									});
-							})();
-						}}
-					>
-						<Input ref={input} placeholder="Username" />
-
-						<Button type="submit" className="w-full mt-3">
-							Add
+		<div className='flex flex-col w-full h-full'>
+			<div className="overflow-y-scroll overflow-x-hidden flex flex-col w-full h-full px-2 py-2 space-y-2">
+				{isTauri && <>
+					<div className="w-full flex space-x-1 overflow-x-hidden">
+						<Button
+							variant="ghost"
+							className="justify-start w-full"
+							onClick={() => navigate(`/`)}
+						>
+							<HomeIcon className='h-5 w-6 mr-2' />
+							<span>
+								Home
+							</span>
 						</Button>
-					</form>
-				</DialogContent>
-			</Dialog>
-			{friends.map((friend) => (
-				<Entry main={userInfo as ClientUser} key={friend.pub} user={friend} />
-			))}
+					</div>
+					<Separator />
+				</>
+				}
+				<Entry user={userInfo as ClientUser} main={userInfo as ClientUser} you />
+				<Separator />
+
+				<Dialog open={open} onOpenChange={setOpen}>
+					<DialogTrigger className="w-full flex justify-start border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 rounded-md">
+						<RiUserAddLine className="h-5 w-5 mr-2" />
+						Add Friend
+					</DialogTrigger>
+					<DialogContent>
+						<DialogHeader>
+							<DialogTitle>Add a friend</DialogTitle>
+							<DialogDescription>Add a friend to chat</DialogDescription>
+						</DialogHeader>
+
+						<form
+							onSubmit={(e) => {
+								e.preventDefault();
+								(async () => {
+									const val = input.current?.value as string;
+
+									//if (input.current) input.current.value = '';
+									const user = await getUser(`@${val}`).then((d) => d.pub);
+
+									data.user.userInfo
+										?.addFriend(user)
+										.then(() => {
+											setOpen(false);
+										})
+										.catch(() => {
+											toast('Failed to add friend');
+										});
+								})();
+							}}
+						>
+							<Input ref={input} placeholder="Username" />
+
+							<Button type="submit" className="w-full mt-3">
+								Add
+							</Button>
+						</form>
+					</DialogContent>
+				</Dialog>
+				{friends.map((friend) => (
+					<Entry main={userInfo as ClientUser} key={`fri-${friend.pub}`} user={friend} />
+				))}
+			</div>
+			{isTauri && <>
+				<Separator />
+				<Settings />
+			</>}
 		</div>
 	);
 }
