@@ -58,8 +58,7 @@ export class DMChannel {
 								.get(query)
 								.get(id)
 								.once(async (rawM) => {
-									const msg = structuredClone(rawM);
-									const translatedMsg = await this.createMessage(msg);
+									const translatedMsg = await this.createMessage(rawM);
 									if (!translatedMsg) return re(undefined);
 									re(translatedMsg);
 								});
