@@ -49,7 +49,7 @@ export class DMChannel {
 			this._db.get(query).once(async (nodes) => {
 				const indieNode = structuredClone(nodes);
 				delete indieNode._;
-				const allNodes = Object.keys(structuredClone(nodes));
+				const allNodes = Object.keys(indieNode);
 
 				Promise.all(
 					allNodes.map((id) => {
@@ -73,17 +73,18 @@ export class DMChannel {
 	}
 
 	private async updateMessageListener(m: MessageStructure) {
-		const message = await this.createMessage(structuredClone(m));
+		const message = await this.createMessage(m);
 		if (!message) return;
 		this.__onMessage(message);
 	}
 
 	private async createMessage(m: MessageStructure) {
-		const decrypted = await this.client.decrypt(m.content, this.peer.epub);
+		const msgCloned = structuredClone(m);
+		const decrypted = await this.client.decrypt(msgCloned.content, this.peer.epub);
 		if (!decrypted.trim()) return null;
-		m.content = decrypted;
-		m.timestamp = Util.getGunKey(m);
-		return new Message(m);
+		msgCloned.content = decrypted;
+		msgCloned.timestamp = Util.getGunKey(msgCloned);
+		return new Message(msgCloned);
 	}
 
 	private createChatListener(query: string) {
