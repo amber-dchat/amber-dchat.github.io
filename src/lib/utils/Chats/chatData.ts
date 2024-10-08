@@ -39,7 +39,7 @@ export class ChatData {
 	// This will likely explode once we add group DMs
 
 	// OUT OF DATE
-	refreshCache() {}
+	refreshCache() { }
 
 	async getChannel(
 		uid: string,
@@ -84,7 +84,7 @@ export class ChatData {
 			},
 		);
 
-		this.clean = await channel.listenToMessages() as () => void;
+		this.clean = await channel.listenToMessages();
 
 		this.chPub = channel.peer.pub;
 		return channel;
