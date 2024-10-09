@@ -51,7 +51,13 @@ export function Login({
 	);
 }
 
-export function ProfileForm({ className, val }: { className: string; val: string }) {
+export function ProfileForm({
+	className,
+	val,
+}: {
+	className: string;
+	val: string;
+}) {
 	const user = useMainUser() as UserContextValues;
 
 	const [err, setErr] = React.useState('');
@@ -76,8 +82,8 @@ export function ProfileForm({ className, val }: { className: string; val: string
 
 						if (remember) {
 							// TODO: Add some basic encryption later on
-							localStorage.setItem("username", username);
-							localStorage.setItem("password", password);
+							localStorage.setItem('username', username);
+							localStorage.setItem('password', password);
 						}
 
 						// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -142,10 +148,14 @@ export function ProfileForm({ className, val }: { className: string; val: string
 				/>
 			</div>
 
-			{
-				isTauri && val == "0" &&
+			{isTauri && val == '0' && (
 				<div className="flex items-center space-x-2">
-					<Checkbox id="terms" checked={remember} disabled={isPending} onClick={() => setRemember((r) => !r)} />
+					<Checkbox
+						id="terms"
+						checked={remember}
+						disabled={isPending}
+						onClick={() => setRemember((r) => !r)}
+					/>
 					<label
 						htmlFor="terms"
 						className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex space-x-1"
@@ -153,16 +163,19 @@ export function ProfileForm({ className, val }: { className: string; val: string
 						Save Credentials
 						<Tooltip>
 							<TooltipTrigger type="button">
-								<IoWarningOutline className='ml-1 w-4 h-4 text-yellow-600' />
+								<IoWarningOutline className="ml-1 w-4 h-4 text-yellow-600" />
 							</TooltipTrigger>
 
 							<TooltipContent>
-								<p className='w-[30ch]'>The username and password will be stored as plain text, which can be read by anyone with access to your user account.</p>
+								<p className="w-[30ch]">
+									The username and password will be stored as plain text, which
+									can be read by anyone with access to your user account.
+								</p>
 							</TooltipContent>
 						</Tooltip>
 					</label>
 				</div>
-			}
+			)}
 
 			<Button type="submit" disabled={isPending}>
 				{val == '0' ? 'Login' : 'Sign Up'}

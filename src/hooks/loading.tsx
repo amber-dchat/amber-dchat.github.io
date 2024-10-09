@@ -25,12 +25,14 @@ export function Loading() {
 		<div className="w-full">
 			{isTauri ? <></> : <NavigationBar />}
 
-			<div className={`${isTauri ? "h-screen" : "h-[calc(100vh-6rem)]"} flex items-center text-center justify-center`}>
-				{isTauri ?
-					<img src="/favicon.png" className='rounded-full w-32 h-32' />
-					:
+			<div
+				className={`${isTauri ? 'h-screen' : 'h-[calc(100vh-6rem)]'} flex items-center text-center justify-center`}
+			>
+				{isTauri ? (
+					<img src="/favicon.png" className="rounded-full w-32 h-32" />
+				) : (
 					<LoadingSpinner className="w-[15vh] h-[15vh]" />
-				}
+				)}
 			</div>
 		</div>
 	);

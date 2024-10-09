@@ -47,10 +47,14 @@ export class BaseUser {
 		this._db = db;
 		this._user = user;
 
-		if (!preventFetch) {
-			(async () => {
-				this.info = await this.refetch(false, this._friends);
-			})();
+		if (!preventFetch) this.createInitialFetch();
+	}
+
+	async createInitialFetch() {
+		try {
+			this.info = await this.refetch(false, this._friends);
+		} catch (error) {
+			console.warn('Unable to create initial fetch\n\n' + error);
 		}
 	}
 
@@ -132,7 +136,7 @@ export class BaseUser {
 		return new Promise((resolve, reject) => {
 			// abort
 			const { clear } = Util.createGunTimeoutRejection(
-				'ERR_TIMEOUT: The user property get operation timeout',
+				'ERR_TIMEOUT: The user property get operation timeout ' + key,
 				reject,
 			);
 

@@ -84,25 +84,28 @@ export default function Sidebar() {
 	const [open, setOpen] = useState(false);
 
 	return (
-		<div className='flex flex-col w-full h-full'>
+		<div className="flex flex-col w-full h-full">
 			<div className="overflow-y-scroll overflow-x-hidden flex flex-col w-full h-full px-2 py-2 space-y-2">
-				{isTauri && <>
-					<div className="w-full flex space-x-1 overflow-x-hidden">
-						<Button
-							variant="ghost"
-							className="justify-start w-full"
-							onClick={() => navigate(`/`)}
-						>
-							<HomeIcon className='h-5 w-6 mr-2' />
-							<span>
-								Home
-							</span>
-						</Button>
-					</div>
-					<Separator />
-				</>
-				}
-				<Entry user={userInfo as ClientUser} main={userInfo as ClientUser} you />
+				{isTauri && (
+					<>
+						<div className="w-full flex space-x-1 overflow-x-hidden">
+							<Button
+								variant="ghost"
+								className="justify-start w-full"
+								onClick={() => navigate(`/`)}
+							>
+								<HomeIcon className="h-5 w-6 mr-2" />
+								<span>Home</span>
+							</Button>
+						</div>
+						<Separator />
+					</>
+				)}
+				<Entry
+					user={userInfo as ClientUser}
+					main={userInfo as ClientUser}
+					you
+				/>
 				<Separator />
 
 				<Dialog open={open} onOpenChange={setOpen}>
@@ -145,13 +148,19 @@ export default function Sidebar() {
 					</DialogContent>
 				</Dialog>
 				{friends.map((friend) => (
-					<Entry main={userInfo as ClientUser} key={`fri-${friend.pub}`} user={friend} />
+					<Entry
+						main={userInfo as ClientUser}
+						key={`fri-${friend.pub}`}
+						user={friend}
+					/>
 				))}
 			</div>
-			{isTauri && <>
-				<Separator />
-				<Settings />
-			</>}
+			{isTauri && (
+				<>
+					<Separator />
+					<Settings />
+				</>
+			)}
 		</div>
 	);
 }

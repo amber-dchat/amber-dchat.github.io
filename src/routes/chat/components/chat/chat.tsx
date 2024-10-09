@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 import { useMessages } from '../../messagesProvider';
 import { ResolvedMessage } from '@/lib/utils/Chats/chatData';
 
-import { Editor } from "@monaco-editor/react";
+import { Editor } from '@monaco-editor/react';
 import { calcDark } from '@/utils/theme';
 import { getFullLanguageName } from './langMap';
 
@@ -22,12 +22,20 @@ function ChatEntry({ msg: { msg, author } }: { msg: ResolvedMessage }) {
 		code({ lang, children }) {
 			const code = children?.toString();
 
-			if (!code?.includes("\n")) {
+			if (!code?.includes('\n')) {
 				return <code>{code}</code>;
 			}
 
-			return <Editor height={"6rem"} theme={calcDark() ? "vs-dark" : "light"} language={getFullLanguageName(lang || "").toLowerCase()} value={code} options={{ readOnly: true, minimap: { enabled: false } }} />
-		}
+			return (
+				<Editor
+					height={'6rem'}
+					theme={calcDark() ? 'vs-dark' : 'light'}
+					language={getFullLanguageName(lang || '').toLowerCase()}
+					value={code}
+					options={{ readOnly: true, minimap: { enabled: false } }}
+				/>
+			);
+		},
 	};
 
 	return (

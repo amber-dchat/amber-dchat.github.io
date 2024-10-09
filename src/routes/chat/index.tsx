@@ -9,9 +9,7 @@ export default function Chat() {
 
 	return (
 		<ChatsProvider>
-			<Messages>
-				{desktop ? <Desktop /> : <Mobile />}
-			</Messages>
+			<Messages>{desktop ? <Desktop /> : <Mobile />}</Messages>
 		</ChatsProvider>
 	);
 }

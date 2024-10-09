@@ -79,7 +79,10 @@ export class DMChannel {
 
 	private async createMessage(m: MessageStructure) {
 		const msgCloned = structuredClone(m);
-		const decrypted = await this.client.decrypt(msgCloned.content, this.peer.epub);
+		const decrypted = await this.client.decrypt(
+			msgCloned.content,
+			this.peer.epub,
+		);
 		if (!decrypted.trim()) return null;
 		msgCloned.content = decrypted;
 		msgCloned.timestamp = Util.getGunKey(msgCloned);

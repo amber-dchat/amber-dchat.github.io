@@ -13,14 +13,16 @@ export default function App() {
 
 	return (
 		<div className="w-full h-full">
-			{isTauri ? <></> :
+			{isTauri ? (
+				<></>
+			) : (
 				<>
 					<NavigationBar />
 					<Separator />
 				</>
-			}
+			)}
 
-			<div className={isTauri ? "h-screen" : "h-[calc(100vh-5.06rem)]"}>
+			<div className={isTauri ? 'h-screen' : 'h-[calc(100vh-5.06rem)]'}>
 				{loggedIn ? <Chat /> : <Home />}
 			</div>
 		</div>

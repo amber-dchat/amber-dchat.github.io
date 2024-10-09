@@ -21,9 +21,8 @@ export function loadTheme() {
 	}
 }
 
-export const calcDark = () => JSON.parse(
-	localStorage.dark || (defaultDark ? 'true' : 'false'),
-) as boolean;
+export const calcDark = () =>
+	JSON.parse(localStorage.dark || (defaultDark ? 'true' : 'false')) as boolean;
 
 export const getTheme = () => {
 	try {

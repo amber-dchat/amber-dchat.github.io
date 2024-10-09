@@ -26,7 +26,6 @@ const delay = (ms: number) => new Promise((r) => setTimeout(() => r(null), ms));
 
 const callbacks: ((data: { pathname: string; query: string }) => void)[] = [];
 
-
 export function usePage() {
 	const [page, setPage] = useState(<Loading />);
 	const [pathname, setPathname] = useState(window.location.pathname);
@@ -65,9 +64,7 @@ export function usePage() {
 		})();
 	}, [pathname, cache]);
 
-	return <TooltipProvider>
-		{page}
-	</TooltipProvider>;
+	return <TooltipProvider>{page}</TooltipProvider>;
 }
 
 export interface PageData {

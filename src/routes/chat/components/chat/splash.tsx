@@ -33,7 +33,9 @@ export default function Splash() {
 
 				<Button
 					variant={'secondary'}
-					onClick={() => window.open('https://github.com/amber-dchat', '_blank')}
+					onClick={() =>
+						window.open('https://github.com/amber-dchat', '_blank')
+					}
 				>
 					<BsGithub className="mr-1" />
 					GitHub Org

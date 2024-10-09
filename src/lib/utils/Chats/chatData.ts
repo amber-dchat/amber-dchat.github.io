@@ -39,7 +39,7 @@ export class ChatData {
 	// This will likely explode once we add group DMs
 
 	// OUT OF DATE
-	refreshCache() { }
+	refreshCache() {}
 
 	async getChannel(
 		uid: string,
